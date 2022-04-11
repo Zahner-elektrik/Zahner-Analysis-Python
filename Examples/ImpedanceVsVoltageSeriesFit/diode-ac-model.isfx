@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zahner-impedance-model name="diode-ac-model.isfx">
+    <zahner-fileinfo>
+        <type>zahner-impedance-model</type>
+        <file-version>3.0</file-version>
+        <created>2022-05-11T07:58:33+02:00</created>
+        <generator>Zahner Analysis</generator>
+        <generator-version>3.2.1</generator-version>
+        <comment></comment>
+        <app-session>b79cabb2-cc61-4f65-964a-8664f4bcea1d</app-session>
+        <file-id>7b24a233-8772-4183-a0f6-5ba5f9b81e9c</file-id>
+    </zahner-fileinfo>
+    <parsed-tree>
+        <serial-connect>
+            <parallel-connect>
+                <resistor name="R0">
+                    <parameter index="0" value="100" fitterFixed="1"/>
+                </resistor>
+                <capacitor name="C0">
+                    <parameter index="0" value="1e-05" fitterFixed="1"/>
+                </capacitor>
+            </parallel-connect>
+            <inductor name="L0">
+                <parameter index="0" value="1e-07" fitterFixed="1"/>
+            </inductor>
+        </serial-connect>
+    </parsed-tree>
+    <schematics-graph>
+        <node pos-x="-128" parallel="2" node-id="0" pos-y="0" type="-2"/>
+        <node pos-x="-320" parallel="2" node-id="1" pos-y="0" type="-1"/>
+        <node pos-x="-192" node-id="2" pos-y="0" name="R0" type="1">
+            <parameter fitterFixed="1" index="0" value="100"/>
+        </node>
+        <node pos-x="0" node-id="3" pos-y="0" name="L0" type="3">
+            <parameter fitterFixed="1" index="0" value="9.9999999999999995e-08"/>
+        </node>
+        <node pos-x="-192" node-id="4" pos-y="64" name="C0" type="2">
+            <parameter fitterFixed="1" index="0" value="1.0000000000000001e-05"/>
+        </node>
+        <edge left-vertex="0" right-node="3" left-node="0" right-vertex="0"/>
+        <edge left-vertex="0" right-node="0" left-node="2" right-vertex="1"/>
+        <edge left-vertex="0" right-node="0" left-node="4" right-vertex="2"/>
+        <edge left-vertex="2" right-node="4" left-node="1" right-vertex="0"/>
+        <edge left-vertex="1" right-node="2" left-node="1" right-vertex="0"/>
+    </schematics-graph>
+</zahner-impedance-model>

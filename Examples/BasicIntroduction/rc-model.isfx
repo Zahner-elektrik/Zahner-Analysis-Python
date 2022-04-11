@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zahner-impedance-model name="rc-model.isfx">
+    <zahner-fileinfo>
+        <type>zahner-impedance-model</type>
+        <file-version>3.0</file-version>
+        <created>2022-05-10T13:48:30+02:00</created>
+        <generator>Zahner Analysis</generator>
+        <generator-version>3.2.1</generator-version>
+        <comment></comment>
+        <app-session>634f7e85-5950-4560-9673-c4291e0f7741</app-session>
+        <file-id>03a0867c-80c1-4c1c-9bcd-28f3b961e3c0</file-id>
+    </zahner-fileinfo>
+    <parsed-tree>
+        <parallel-connect>
+            <capacitor name="C0">
+                <parameter index="0" value="1e-05" fitterFixed="1"/>
+            </capacitor>
+            <resistor name="R0">
+                <parameter index="0" value="100" fitterFixed="1"/>
+            </resistor>
+        </parallel-connect>
+    </parsed-tree>
+    <schematics-graph>
+        <node pos-x="-128" node-id="0" pos-y="0" type="1" name="R0">
+            <parameter value="100" fitterFixed="1" index="0"/>
+        </node>
+        <node pos-x="-128" node-id="1" pos-y="-64" type="2" name="C0">
+            <parameter value="1.0000000000000001e-05" fitterFixed="1" index="0"/>
+        </node>
+        <node parallel="2" pos-x="-256" node-id="2" pos-y="-64" type="-1"/>
+        <node parallel="2" pos-x="-64" node-id="3" pos-y="-64" type="-2"/>
+        <edge right-node="1" left-node="2" right-vertex="0" left-vertex="1"/>
+        <edge right-node="0" left-node="2" right-vertex="0" left-vertex="2"/>
+        <edge right-node="3" left-node="0" right-vertex="2" left-vertex="0"/>
+        <edge right-node="3" left-node="1" right-vertex="1" left-vertex="0"/>
+    </schematics-graph>
+</zahner-impedance-model>

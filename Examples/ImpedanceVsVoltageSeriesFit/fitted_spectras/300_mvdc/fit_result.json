@@ -1,0 +1,35 @@
+{
+  "model": {
+    "C0": {
+      "C": {
+        "error": 63609.47916624171,
+        "significance": 6.181592398727808e-05,
+        "value": 1.1194749196462139e-10,
+        "value_unit": "F"
+      }
+    },
+    "L0": {
+      "L": {
+        "error": 9.157604257017596,
+        "significance": 0.42937853816925325,
+        "value": 2.981589284283583e-08,
+        "value_unit": "H"
+      }
+    },
+    "R0": {
+      "R": {
+        "error": 3.8936452146555536,
+        "significance": 0.9739902556361958,
+        "value": 0.19581516541957492,
+        "value_unit": "Ω"
+      }
+    }
+  },
+  "overall": {
+    "impedance_error_max": 2.424045739635664,
+    "impedance_error_mean": 0.11732912128468226,
+    "overall_error": 2.507454462094094,
+    "phase_error_max": 1.8704070237223696,
+    "phase_error_mean": 0.08883239008422582
+  }
+}

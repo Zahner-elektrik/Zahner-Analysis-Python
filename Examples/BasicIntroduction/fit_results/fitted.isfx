@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zahner-impedance-model name="">
+    <zahner-fileinfo>
+        <type>zahner-impedance-model</type>
+        <file-version>3.0</file-version>
+        <created>2022-05-30T15:44:29+02:00</created>
+        <generator>Zahner Analysis</generator>
+        <generator-version>3.2.1</generator-version>
+        <comment></comment>
+        <app-session>0929e98d-4eb5-468e-a87c-39f41c1698ad</app-session>
+        <file-id>03a0867c-80c1-4c1c-9bcd-28f3b961e3c0</file-id>
+    </zahner-fileinfo>
+    <parsed-tree>
+        <parallel-connect>
+            <capacitor name="C0">
+                <parameter index="0" value="1.46919e-10" fitterFixed="1"/>
+            </capacitor>
+            <resistor name="R0">
+                <parameter index="0" value="9.95867e+07" fitterFixed="1"/>
+            </resistor>
+        </parallel-connect>
+    </parsed-tree>
+</zahner-impedance-model>

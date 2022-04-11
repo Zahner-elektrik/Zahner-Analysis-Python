@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zahner-impedance-model name="">
+    <zahner-fileinfo>
+        <type>zahner-impedance-model</type>
+        <file-version>3.0</file-version>
+        <created>2022-05-30T15:28:29+02:00</created>
+        <generator>Zahner Analysis</generator>
+        <generator-version>3.2.1</generator-version>
+        <comment></comment>
+        <app-session>3d0e1956-e294-4b91-a51f-aaa23fba23dc</app-session>
+        <file-id>952382eb-6d50-47a7-8098-284f03f31d64</file-id>
+    </zahner-fileinfo>
+    <parsed-tree>
+        <serial-connect>
+            <parallel-connect>
+                <serial-connect>
+                    <finite-diffusion name="FI0">
+                        <parameter index="0" value="0.0407338" fitterFixed="1"/>
+                        <parameter index="1" value="0.00138542" fitterFixed="1"/>
+                    </finite-diffusion>
+                    <resistor name="R0">
+                        <parameter index="0" value="0.00362043" fitterFixed="1"/>
+                    </resistor>
+                </serial-connect>
+                <capacitor name="C0">
+                    <parameter index="0" value="0.0502011" fitterFixed="1"/>
+                </capacitor>
+            </parallel-connect>
+            <resistor name="R1">
+                <parameter index="0" value="0.0268303" fitterFixed="1"/>
+            </resistor>
+            <parallel-connect>
+                <resistor name="R2">
+                    <parameter index="0" value="0.0359411" fitterFixed="1"/>
+                </resistor>
+                <constant-phase-element name="CPE0" edit_mode="y">
+                    <parameter index="0" value="0.0675623" fitterFixed="1"/>
+                    <parameter index="1" value="0.736683" fitterFixed="1"/>
+                    <parameter index="2" value="1000" fitterFixed="0"/>
+                </constant-phase-element>
+            </parallel-connect>
+            <inductor name="L0">
+                <parameter index="0" value="7.94003e-07" fitterFixed="1"/>
+            </inductor>
+        </serial-connect>
+    </parsed-tree>
+</zahner-impedance-model>

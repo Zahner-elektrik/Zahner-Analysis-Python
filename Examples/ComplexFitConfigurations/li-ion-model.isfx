@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zahner-impedance-model name="li-ion-model.isfx">
+    <zahner-fileinfo>
+        <type>zahner-impedance-model</type>
+        <file-version>3.0</file-version>
+        <created>2022-05-23T11:38:06+02:00</created>
+        <generator>Zahner Analysis</generator>
+        <generator-version>3.2.1</generator-version>
+        <comment></comment>
+        <app-session>e569cf00-cdbd-4173-bba9-5a28182ee932</app-session>
+        <file-id>952382eb-6d50-47a7-8098-284f03f31d64</file-id>
+    </zahner-fileinfo>
+    <parsed-tree>
+        <serial-connect>
+            <parallel-connect>
+                <serial-connect>
+                    <finite-diffusion name="FI0">
+                        <parameter index="0" value="0.060577" fitterFixed="1"/>
+                        <parameter index="1" value="0.002414" fitterFixed="1"/>
+                    </finite-diffusion>
+                    <resistor name="R0">
+                        <parameter index="0" value="0.005" fitterFixed="1"/>
+                    </resistor>
+                </serial-connect>
+                <capacitor name="C0">
+                    <parameter index="0" value="0.080207" fitterFixed="1"/>
+                </capacitor>
+            </parallel-connect>
+            <resistor name="R1">
+                <parameter index="0" value="0.05007" fitterFixed="1"/>
+            </resistor>
+            <parallel-connect>
+                <resistor name="R2">
+                    <parameter index="0" value="0.035981" fitterFixed="1"/>
+                </resistor>
+                <constant-phase-element name="CPE0">
+                    <parameter index="0" value="0.38469" fitterFixed="1"/>
+                    <parameter index="1" value="0.93148" fitterFixed="1"/>
+                    <parameter index="2" value="1000" fitterFixed="0"/>
+                </constant-phase-element>
+            </parallel-connect>
+            <inductor name="L0">
+                <parameter index="0" value="9.0065e-07" fitterFixed="1"/>
+            </inductor>
+        </serial-connect>
+    </parsed-tree>
+    <schematics-graph>
+        <node pos-y="0" type="-1" pos-x="-640" node-id="0" parallel="2"/>
+        <node pos-y="0" type="-2" pos-x="-320" node-id="1" parallel="2"/>
+        <node name="FI0" pos-y="0" type="19" pos-x="-512" node-id="2">
+            <parameter fitterFixed="1" value="0.060577000000000013" index="0"/>
+            <parameter fitterFixed="1" value="0.0024140000000000008" index="1"/>
+        </node>
+        <node name="R0" pos-y="0" type="1" pos-x="-384" node-id="3">
+            <parameter fitterFixed="1" value="0.005000000000000001" index="0"/>
+        </node>
+        <node name="C0" pos-y="64" type="2" pos-x="-512" node-id="4">
+            <parameter fitterFixed="1" value="0.080207000000000014" index="0"/>
+        </node>
+        <node name="R1" pos-y="0" type="1" pos-x="-192" node-id="5">
+            <parameter fitterFixed="1" value="0.05007000000000001" index="0"/>
+        </node>
+        <node pos-y="0" type="-1" pos-x="-128" node-id="6" parallel="2"/>
+        <node pos-y="0" type="-2" pos-x="64" node-id="7" parallel="2"/>
+        <node name="R2" pos-y="0" type="1" pos-x="0" node-id="8">
+            <parameter fitterFixed="1" value="0.035980970066296962" index="0"/>
+        </node>
+        <node name="CPE0" pos-y="64" type="6" pos-x="0" node-id="9" edit_mode="y">
+            <parameter fitterFixed="1" value="0.38469000000000009" index="0"/>
+            <parameter fitterFixed="1" value="0.9314800000000002" index="1"/>
+            <parameter fitterFixed="0" value="1000" index="2"/>
+        </node>
+        <node name="L0" pos-y="0" type="3" pos-x="192" node-id="10">
+            <parameter fitterFixed="1" value="9.0065000000000075e-07" index="0"/>
+        </node>
+        <edge left-node="2" right-node="3" left-vertex="0" right-vertex="0"/>
+        <edge left-node="0" right-node="2" left-vertex="1" right-vertex="0"/>
+        <edge left-node="3" right-node="1" left-vertex="0" right-vertex="1"/>
+        <edge left-node="0" right-node="4" left-vertex="2" right-vertex="0"/>
+        <edge left-node="4" right-node="1" left-vertex="0" right-vertex="2"/>
+        <edge left-node="6" right-node="8" left-vertex="1" right-vertex="0"/>
+        <edge left-node="8" right-node="7" left-vertex="0" right-vertex="1"/>
+        <edge left-node="6" right-node="9" left-vertex="2" right-vertex="0"/>
+        <edge left-node="9" right-node="7" left-vertex="0" right-vertex="2"/>
+        <edge left-node="1" right-node="5" left-vertex="0" right-vertex="0"/>
+        <edge left-node="5" right-node="6" left-vertex="0" right-vertex="0"/>
+        <edge left-node="7" right-node="10" left-vertex="0" right-vertex="0"/>
+    </schematics-graph>
+</zahner-impedance-model>
