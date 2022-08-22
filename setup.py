@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="zahner_analysis",
-    version="1.0.0",
+    version="1.0.1",
     author="Maximilian Krapp",
     author_email="maximilian.krapp@zahner.de",
     description="Python package for the analysis of electrochemical impedance spectra.",
