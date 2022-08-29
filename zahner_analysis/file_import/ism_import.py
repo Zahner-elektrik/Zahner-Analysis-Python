@@ -28,6 +28,7 @@ import datetime
 import io
 import os
 
+from zahner_analysis.file_import.thales_file_utils import *
 
 class IsmImport():
     """ Class to be able to read ism files (EIS data).
@@ -51,53 +52,15 @@ class IsmImport():
             
             ismFile = open(filename, 'rb')
         
-        version = ismFile.read(6)
-        self.numberOfSamples = int.from_bytes(ismFile.read(6), "big", signed=True) + 1             
-        tmpFrequency = np.ndarray(shape=(self.numberOfSamples,), dtype=">f8", buffer=ismFile.read(8 * self.numberOfSamples))
-        tmpImpedance = np.ndarray(shape=(self.numberOfSamples,), dtype=">f8", buffer=ismFile.read(8 * self.numberOfSamples))
-        tmpPhase = np.ndarray(shape=(self.numberOfSamples,), dtype=">f8", buffer=ismFile.read(8 * self.numberOfSamples))
-        tmpTime = np.ndarray(shape=(self.numberOfSamples,), dtype=">f8", buffer=ismFile.read(8 * self.numberOfSamples))
-        tmpSignificance = np.ndarray(shape=(self.numberOfSamples,), dtype=">i2", buffer=ismFile.read(2 * self.numberOfSamples))
-        
-        dateStringLength = int.from_bytes(ismFile.read(2), "big", signed=True)
-        dateString = ismFile.read(dateStringLength)
-        date = dateString[0:6].decode("ASCII")
-        
-        day = int(date[0:2])
-        month = int(date[2:4])
-        year = int(date[4:6])
-        
-        """
-        Only the last two digits of the date are saved.
-        It is assumed that the measurement was carried out between 1970 and 2070.
-        A software update is necessary in the year 2070 at the latest.
-        """
-        if year < 70:
-            year += 2000
-        else:
-            year += 1900
+        version = readI6FromFile(ismFile)
+        self.numberOfSamples = readI6FromFile(ismFile) + 1             
+        self.frequency = readF8ArrayFromFile(ismFile, self.numberOfSamples)
+        self.impedance = readF8ArrayFromFile(ismFile, self.numberOfSamples)
+        self.phase = readF8ArrayFromFile(ismFile, self.numberOfSamples)
+        self.measurementTimeStamp = readTimeStampDateTimeArrayFromFile(ismFile, self.numberOfSamples)
+        self.significance = readI2ArrayFromFile(ismFile, self.numberOfSamples)
             
-        self.measurementDate = datetime.datetime(year, month, day)
-        
-        self.frequency = np.zeros(len(tmpFrequency))
-        for i in range(len(tmpFrequency)):
-            self.frequency[i] = tmpFrequency[i]
-        
-        self.impedance = np.zeros(len(tmpImpedance))
-        for i in range(len(tmpImpedance)):
-            self.impedance[i] = tmpImpedance[i]
-        
-        self.phase = np.zeros(len(tmpPhase))
-        for i in range(len(tmpPhase)):
-            self.phase[i] = tmpPhase[i]
-            
-        self.measurementTimeStamp = []
-        for i in range(len(tmpTime)):
-            self.measurementTimeStamp.append(self._ismTimeStampToDateTime(tmpTime[i]))
-            
-        self.significance = np.zeros(len(tmpSignificance))
-        for i in range(len(tmpSignificance)):
-            self.significance[i] = tmpSignificance[i]
+        self.measurementDate = readZahnerDate(ismFile)
         
         ismFile.close()
         
@@ -207,6 +170,15 @@ class IsmImport():
         else:
             return self.measurementTimeStamp[self.fromIndex:self.toIndex]
     
+    def getMeasurementStartDateTime(self):
+        """ Get the start date time of the measurement.
+        
+        Returns the start datetime of the measurement.
+        
+        :returns: datetime object with the start time of the measurement.
+        """
+        return min(self.measurementTimeStamp)
+    
     def getMeasurementEndDateTime(self):
         """ Get the end date time of the measurement.
         
@@ -242,18 +214,4 @@ class IsmImport():
         :returns: bytearray with the file content.
         """
         return self._binaryFileContent
-        
-    def _ismTimeStampToDateTime(self, timestamp):
-        """ Calculation of the time stamp.
-        
-        The time is in seconds related to 01.01.1980.
-        
-        :param timestamp: Seconds since 01.01.1980.
-        :returns: Python datetime object.
-        """
-        timeZero = datetime.datetime(1980, 1, 1)
-        timeDifference = datetime.timedelta(seconds=abs(timestamp))
-        
-        timestamp = timeZero + timeDifference
-        return timestamp
     

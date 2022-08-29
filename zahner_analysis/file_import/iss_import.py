@@ -24,79 +24,80 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import numpy as np
-import datetime
 import io
 import re
 import os
+import datetime
 
 from zahner_analysis.file_import.thales_file_utils import *
 
 
-class IscImport():
-    """ Class to be able to read out isc files (CV).
+class IssImport():
+    """ Class to be able to read out iss files (I/E, Current Voltage Curves).
     
-    This class extracts the data from the isc files.
+    This class extracts the data from the iss files.
     
-    :param file: The path to the isc file, or the isc file as bytes or bytearray.
+    :param file: The path to the iss file, or the iss file as bytes or bytearray.
     :type file: str, bytes, bytearray
     """
 
     def __init__(self, filename):
-        self._filename = "FromBytes.isc"
+        self._filename = "FromBytes.iss"
         if isinstance(filename, bytes) or isinstance(filename, bytearray):
             self._binaryFileContent = filename
-            iscFile = io.BytesIO(filename)
+            issFile = io.BytesIO(filename)
         else:
             (_, self._filename) = os.path.split(filename)
             with open(filename, "rb") as f:
                 self._binaryFileContent = f.read()
             
-            iscFile = open(filename, 'rb')
+            issFile = open(filename, 'rb')
         
-        self.Pstart = readF8FromFile(iscFile)
-        self.Tstart = readF8FromFile(iscFile)
-        self.Pupper = readF8FromFile(iscFile)
-        self.Plower = readF8FromFile(iscFile)
-        self.Tend = readF8FromFile(iscFile)
-        self.Pend = readF8FromFile(iscFile)
-        self.Srate = readF8FromFile(iscFile)
-        self.Periods = readF8FromFile(iscFile)
-        self.PpPer = readF8FromFile(iscFile)
-        self.Imi = readF8FromFile(iscFile)
-        self.Ima = readF8FromFile(iscFile)
-        self.Odrop = readF8FromFile(iscFile)
-        self.Sstart = readF8FromFile(iscFile)
-        self.Send = readF8FromFile(iscFile)
-        self.AZeit = readF8FromFile(iscFile)
-        self.ZpMp = readF8FromFile(iscFile)
-        self.delay = readF8FromFile(iscFile)
+        self.EdgePotential0 = readF8FromFile(issFile)
+        self.EdgePotential1 = readF8FromFile(issFile)
+        self.EdgePotential2 = readF8FromFile(issFile)
+        self.EdgePotential3 = readF8FromFile(issFile)
+        self.Resolution = readF8FromFile(issFile)
+        self.variable_a = readF8FromFile(issFile)
+        self.variable_b = readF8FromFile(issFile)
+        self.RelativeTolerance = readF8FromFile(issFile)
+        self.AbsoluteTolerance = readF8FromFile(issFile)
+        self.OhmicDrop = readF8FromFile(issFile)
         
-        numberOfElements = readI6FromFile(iscFile) + 1
-        intVoltageRead = readI2ArrayFromFile(iscFile, numberOfElements)
-        self.current = readF8ArrayFromFile(iscFile, numberOfElements)
+        numberOfElements = readI6FromFile(issFile) + 1
         
-        self.Date = readZahnerStringFromFile(iscFile)
-        self.System = readZahnerStringFromFile(iscFile)
-        self.Temperature = readZahnerStringFromFile(iscFile)
-        self.Time = readZahnerStringFromFile(iscFile)
-        self.Slew_Rate = readZahnerStringFromFile(iscFile)
-        self.Comment_1 = readZahnerStringFromFile(iscFile)
-        self.Comment_2 = readZahnerStringFromFile(iscFile)
-        self.Comment_3 = readZahnerStringFromFile(iscFile)
-        self.Comment_4 = readZahnerStringFromFile(iscFile)
-        self.Comment_5 = readZahnerStringFromFile(iscFile)
-        self.ElecArea = readZahnerStringFromFile(iscFile)
-        self.POPF = readZahnerStringFromFile(iscFile)
+        intVoltageRead = readI2ArrayFromFile(issFile, numberOfElements)
+        self.current = readF8ArrayFromFile(issFile, numberOfElements)
+        self.time = readF8ArrayFromFile(issFile, numberOfElements)
+        
+        self.Date = readZahnerStringFromFile(issFile)
+        self.System = readZahnerStringFromFile(issFile)
+        self.Temperature = readZahnerStringFromFile(issFile)
+        self.Time = readZahnerStringFromFile(issFile)
+        self.Slew_Rate = readZahnerStringFromFile(issFile)
+        self.Comment_1 = readZahnerStringFromFile(issFile)
+        self.Comment_2 = readZahnerStringFromFile(issFile)
+        self.Comment_3 = readZahnerStringFromFile(issFile)
+        self.Comment_4 = readZahnerStringFromFile(issFile)
+        self.Comment_5 = readZahnerStringFromFile(issFile)
+        self.ElectrodeArea = readZahnerStringFromFile(issFile)
+        self.POPF = readZahnerStringFromFile(issFile)
         
         starttime, endtime = self.Time.split("-")
         
-        self.measurementStartDateTime = datetime.datetime.strptime(self.Date + starttime, "%d%m%y%H:%M:%S")
-        self.measurementEndDateTime = datetime.datetime.strptime(self.Date + endtime, "%d%m%y%H:%M:%S")
+        try:
+            self.measurementStartDateTime = datetime.datetime.strptime(self.Date + starttime, "%d%m%y%H:%M:%S")
+            self.measurementEndDateTime = datetime.datetime.strptime(self.Date + endtime, "%d%m%y%H:%M:%S")
+        except:
+            # something is incorrect with the file format.
+            self.measurementStartDateTime = None
+            self.measurementEndDateTime = None
+            
         
         offset = 0.0
         factor = 1.0
         
-        popfPattern = "^\s*(.*?),\s*(.*?)\s*PO.PF *(.*?), *(.*)$"
+        popfPattern = "^\s*(.*?),\s*(.*?)\s*PO.PF.*Ima.*?,(.*?), *(.*)$"
         
         popfMatch = re.search(popfPattern, self.POPF)
         
@@ -115,9 +116,7 @@ class IscImport():
                 offset = float(popfMatch.group(1))
                 factor = float(popfMatch.group(2))
         
-        self.voltage = intVoltageRead * (factor/8000.0) + offset        
-        self.time = np.array(range(numberOfElements)) * self.ZpMp + self.Sstart
-                
+        self.voltage = intVoltageRead * (factor/8000.0) + offset
         return
     
     def getMeasurementStartDateTime(self):
@@ -159,13 +158,6 @@ class IscImport():
         """
         return self.voltage
     
-    def getScanRate(self):
-        """ Read the scan rate or slew rate.
-        
-        :returns: The scan rate in V/s.
-        """
-        return self.Srate/1000.0
-    
     def save(self, filename):
         """ Save the cv data.
         
@@ -192,5 +184,5 @@ class IscImport():
         :returns: bytearray with the file content.
         """
         return self._binaryFileContent
-            
+    
     

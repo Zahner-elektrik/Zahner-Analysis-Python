@@ -13,6 +13,8 @@ The elements and parameters of the model can be read and processed with Python.
 
 With the Python package [thales_remote](https://github.com/Zahner-elektrik/Thales-Remote-Python) as a supplement, EIS measurements can be performed with a Zennium and immediately evaluated. The [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) is not required for importing and plotting data with Python.
 
+Additional features are the import of measurement data for CV and I/E measurements (isc and iss files). For this the [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) is not necessary.
+
 # 📚 Documentation
 
 The complete documentation of the individual functions can be found on the [API documentation website](https://doc.zahner.de/zahner_analysis/).  
