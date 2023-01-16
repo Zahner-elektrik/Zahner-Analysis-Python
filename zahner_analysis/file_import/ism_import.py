@@ -4,7 +4,7 @@
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
  /___/\_,_/_//_/_//_/\__/_/      \__/_/\__/_/\_\\__/_/ /_/_/\_\
 
-Copyright 2022 Zahner-Elektrik GmbH & Co. KG
+Copyright 2023 Zahner-Elektrik GmbH & Co. KG
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
@@ -62,8 +62,9 @@ class IsmImport:
             ismFile, self.numberOfSamples
         )
         self.significance = readI2ArrayFromFile(ismFile, self.numberOfSamples)
+        self._metaData = bytearray(ismFile.read())
 
-        self.measurementDate = readZahnerDate(ismFile)
+        self.measurementDate = readZahnerDate(io.BytesIO(self._metaData))
 
         ismFile.close()
 
@@ -123,17 +124,20 @@ class IsmImport:
         else:
             return self.impedance[self.fromIndex : self.toIndex]
 
-    def getPhaseArray(self):
+    def getPhaseArray(self, degree=False):
         """Get the phase points from the measurement.
 
         The phase points between the reversal frequency and the final frequency are returned.
 
         :returns: Numpy array with the phase points as radiant.
         """
+        radToDegree = 1.0
+        if degree == True:
+            radToDegree = 360 / (2 * np.pi)
         if self.swapNecessary:
-            return np.flip(self.phase[self.fromIndex : self.toIndex])
+            return np.flip(self.phase[self.fromIndex : self.toIndex] * radToDegree)
         else:
-            return self.phase[self.fromIndex : self.toIndex]
+            return self.phase[self.fromIndex : self.toIndex] * radToDegree
 
     def getComplexImpedanceArray(self):
         """Get the complex impedance points from the measurement.
@@ -217,3 +221,12 @@ class IsmImport:
         :returns: bytearray with the file content.
         """
         return self._binaryFileContent
+
+    def getMetaData(self):
+        """Get the meta data of the file binary.
+
+        Returns the file contents as a binary byte array.
+
+        :returns: bytearray with the file content.
+        """
+        return self._metaData

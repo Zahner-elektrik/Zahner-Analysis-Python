@@ -1,3 +1,7 @@
+/build/
+/sphinxenv/
+/test_output/
+/.pydevproject
 /.project
 /.pydevproject
 
