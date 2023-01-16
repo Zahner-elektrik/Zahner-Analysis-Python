@@ -11,7 +11,7 @@ import re
 if __name__ == "__main__":
     impedanceCircuitModel = IsfxModelImport(r"diode-ac-model.isfx")
     print(impedanceCircuitModel)
-    
+
     print(f"Resistance initial value: {impedanceCircuitModel['R0']['R'].getValue()}\n")
 
     fitting = EisFitting()
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     measuredVoltageValues = []
     fittedResistanceValues = []
-    
+
     for spectra in spectras:
         # Fitting the spectra in a loop
         print(f"File: {spectra}")
@@ -32,27 +32,28 @@ if __name__ == "__main__":
         measuredVoltageValues.append(voltage)
         fittedResistanceValue = fittingResult.getFittedModel()["R0"]["R"].getValue()
         fittedResistanceValues.append(fittedResistanceValue)
-        
-        voltageFormatter = EngFormatter(unit='V', sep=' ')
-        resistanceFormatter = EngFormatter(unit='Ω', sep=' ')
-        print(f"Voltage: {voltageFormatter.format_data(voltage)} Fitted Resistance: {resistanceFormatter.format_data(fittedResistanceValue)}")
+
+        voltageFormatter = EngFormatter(unit="V", sep=" ")
+        resistanceFormatter = EngFormatter(unit="Ω", sep=" ")
+        print(
+            f"Voltage: {voltageFormatter.format_data(voltage)} Fitted Resistance: {resistanceFormatter.format_data(fittedResistanceValue)}"
+        )
 
         # Save the fit results
         filename = os.path.splitext(os.path.split(spectra)[1])[0]
         fittingResult.save(path="fitted_spectras", foldername=filename)
-        
+
         # Setting the new model for the next fit
         impedanceCircuitModel = fittingResult.getFittedModel()
 
     fig, (ax) = plt.subplots(1, 1)
-    
+
     ax.semilogy(measuredVoltageValues, fittedResistanceValues)
     ax.xaxis.set_major_formatter(EngFormatter(unit="V"))
     ax.yaxis.set_major_formatter(EngFormatter(unit="Ω"))
     ax.set_xlabel(r"Voltage across the diode")
     ax.set_ylabel(r"Differential Resistance")
-    ax.grid(which="both", linestyle='--', linewidth=0.5)
+    ax.grid(which="both", linestyle="--", linewidth=0.5)
     fig.set_size_inches(12, 10)
     fig.savefig("RvsU.svg")
     plt.show()
-

@@ -29,15 +29,15 @@ import os
 
 
 class IsfxModelImport:
-    """ Class to import model/circuits.
-    
+    """Class to import model/circuits.
+
     The models must be in zahner isfx xml format.
     Either you pass the filename of the model you want to open or you pass the content of the file as a string.
-    
+
     :param xmlFilePath: The file path of the isfx model file.
     :param xmlString: The model as a string or the content of an isfx file.
     """
-    
+
     def __init__(self, xmlFilePath=None, xmlString=None):
         self._filename = None
         if xmlString is not None:
@@ -45,40 +45,44 @@ class IsfxModelImport:
             self._completeXmlTree = et.fromstring(xmlString)
         elif xmlFilePath is not None:
             (_, self._filename) = os.path.split(xmlFilePath)
-            with open(xmlFilePath, 'r', encoding="utf-8") as filename:
+            with open(xmlFilePath, "r", encoding="utf-8") as filename:
                 self._xmlString = filename.read()
-            with open(xmlFilePath, 'r', encoding="utf-8") as filename:
+            with open(xmlFilePath, "r", encoding="utf-8") as filename:
                 self._completeXmlTree = et.parse(filename).getroot()
-            
+
         self.parsed_tree_elements = self._completeXmlTree.find("parsed-tree")
-        
+
         pattern = r"<([\S]+)\s*name=\"[\S ]+?\"\s*>"
-        matched = re.findall(pattern, str(et.tostring(self.parsed_tree_elements, encoding="utf-8")))
+        matched = re.findall(
+            pattern, str(et.tostring(self.parsed_tree_elements, encoding="utf-8"))
+        )
         self.existingElementTypesInModel = list(set(matched))
-        
+
         self._elements = []
         for element in self.existingElementTypesInModel:
             foundElements = self._completeXmlTree.findall(".//" + element)
-            self._elements.extend([IsfxModelElement(element) for element in foundElements])
+            self._elements.extend(
+                [IsfxModelElement(element) for element in foundElements]
+            )
         return
-    
+
     def __str__(self):
-        """ Create string with all circuit elements of the model.
-        
+        """Create string with all circuit elements of the model.
+
         :return: String with all circuit elements.
         """
-        retval = ""          
+        retval = ""
         for element in self._elements:
             retval += str(element)
         return retval
-    
+
     def toString(self):
-        """ Create string with all circuit elements of the model.
-        
+        """Create string with all circuit elements of the model.
+
         print(IsfxModelImport(...)) generates for example the following string:
-        
+
         .. code-block::
-        
+
             Model: li-ion-model - fitted:
             inductor : L0
                   L:  7.940e-07 H        fixed: False
@@ -97,39 +101,39 @@ class IsfxModelImport:
                   R:  2.683e-02 Ω        fixed: False
             resistor : R2
                   R:  3.597e-02 Ω        fixed: False
-        
+
         :return: String with all circuit elements.
         """
         return self.__str__()
-    
+
     def __getitem__(self, key):
-        """ Access to elements of the model.
-        
+        """Access to elements of the model.
+
         This function is used to access circuit elements via the [] operator.
-        
+
         Then the elements can be accessed as in the following example.
-        
+
         .. code-block:: python
-        
+
             impedanceCircuitModel = IsfxModelImport(r"diode-ac-model.isfx")
             print(impedanceCircuitModel["R0"]["R"].getValue())
-        
+
         :returns: The circuit element.
         :rtype: IsfxModelElement
         """
         return self.getCircuitElementByName(key)
-    
+
     def getCircuitElementByName(self, name):
-        """ Returns an element of the circuit.
-        
+        """Returns an element of the circuit.
+
         This function is used by the [] operator. Instead of this getter you can also use the []
         operator wi in the following example.
-        
+
         .. code-block:: python
-        
+
             impedanceCircuitModel = IsfxModelImport(r"diode-ac-model.isfx")
             print(impedanceCircuitModel["R0"]["R"].getValue())
-        
+
         :returns: The circuit element.
         :rtype: IsfxModelElement
         """
@@ -139,32 +143,32 @@ class IsfxModelImport:
                 retval = element
                 break
         return retval
-    
+
     def getCircuitElements(self):
-        """ Returns all circuit elements as an array.       
-        
+        """Returns all circuit elements as an array.
+
         :returns: The circuit elements.
         """
         return self._elements
-    
+
     def save(self, filename):
-        """ Save the model.
-        
+        """Save the model.
+
         The model is saved with this function. The isfx file format contains xml.
-        
+
         :param filename: Path and filename of the file to be saved with the extension .isfx.
         """
-        with open(filename, 'w', encoding='utf-8') as f:
+        with open(filename, "w", encoding="utf-8") as f:
             f.write(self._xmlString)
         return
-    
+
     def getFileName(self):
-        """ Returns the filename.
-        
+        """Returns the filename.
+
         If the model was created from the disk, then the filename is returned,
         otherwise the name attribute from the xml is returned.
         If the xml name attribute is an empty string "FromString.isfx" is returned.
-        
+
         :returns: The name.
         """
         if self._filename is None:
@@ -174,77 +178,79 @@ class IsfxModelImport:
                 return self._completeXmlTree.attrib["name"]
         else:
             return self._filename
-    
+
     def getBinaryFileContent(self):
-        """ Get the content of the file binary.
-        
+        """Get the content of the file binary.
+
         Returns the file contents as a binary byte array.
-        
+
         :returns: bytearray with the file content.
         """
-        return self._xmlString.encode(encoding='utf-8')
+        return self._xmlString.encode(encoding="utf-8")
 
-    
+
 class IsfxModelElement:
-    """ Classe which represents the circuit elements.
-    
+    """Classe which represents the circuit elements.
+
     This constructor is only used by the class IsfxModelImport.
-    
+
     :param xmlElement: The circuit element.
     """
-    
+
     def __init__(self, xmlElement):
         self.xml = xmlElement
-        
+
         xmlParameters = self.xml.findall(".//parameter")
         if len(xmlParameters) == 0:
             # for the user element it is called user-parameter
             xmlParameters = self.xml.findall(".//user-parameter")
-        self.parameters = [IsfxModelElementParameter(param, self.xml.tag) for param in xmlParameters]
+        self.parameters = [
+            IsfxModelElementParameter(param, self.xml.tag) for param in xmlParameters
+        ]
         return
-    
+
     def __str__(self):
-        """ Creates a string with the circuit element and its parameters.
-        
+        """Creates a string with the circuit element and its parameters.
+
         :return: String with the element and its parameters.
         """
         retval = f"{self.getType()} : {self.getName()}\n"
         for param in self.getParameters():
             retval += str(param) + "\n"
         return retval
-    
+
     def __getitem__(self, key):
-        """ Returns an parameter of an circuit element.
-        
+        """Returns an parameter of an circuit element.
+
         This function is used to access circuit elements and its parameters via the [] operator.
-        
+
         Then the elements can be accessed as in the following example.
-        
+
         .. code-block:: python
-        
+
             impedanceCircuitModel = IsfxModelImport(r"diode-ac-model.isfx")
             print(impedanceCircuitModel["R0"]["R"].getValue())
-            
+
         Each resistor has a parameter R. Young Goehr impedances, for example, have the parameters C, p and T.
-        
+
         :returns: The circuit element parameter.
         :rtype: IsfxModelElementParameter
         """
         return self.getParameterByName(key)
-    
+
     def getParameterByName(self, name):
-        """ Returns an parameter of an circuit element.
-        
+        """Returns an parameter of an circuit element.
+
         This function is used by the [] operator. Instead of this getter you can also use the []
         operator with in the following example.
-        
+
         .. code-block:: python
-        
+
             impedanceCircuitModel = IsfxModelImport(r"diode-ac-model.isfx")
             print(impedanceCircuitModel["R0"]["R"].getValue())
-            
+
         Each resistor has a parameter "R". Young Goehr impedances, for example, have the parameters C, p and T.
-        
+
         :returns: The circuit element parameter.
         :rtype: IsfxModelElementParameter
         """
@@ -255,118 +261,122 @@ class IsfxModelElement:
                 retval = parameter
                 break
         return retval
-    
+
     def getParameters(self):
-        """ Returns all parameters of the circuit element as an array.       
-        
+        """Returns all parameters of the circuit element as an array.
+
         :returns: The parameters.
         """
         return self.parameters
-    
+
     def getName(self):
-        """ Returns the name of the circuit element.
-        
+        """Returns the name of the circuit element.
+
         The name is the one assigned in the GUI, for example R0 or CPE7.
-        
+
         :returns: Name of the circuit element.
         """
         return self.xml.attrib["name"]
-    
+
     def getType(self):
-        """ Returns the type of the circuit element.
-        
+        """Returns the type of the circuit element.
+
         :returns: Type of the circuit element.
         """
         return self.xml.tag
 
-    
+
 class IsfxModelElementParameter:
-    """ Class which represents a parameter of a circuit element.
-    
+    """Class which represents a parameter of a circuit element.
+
     This constructor is only used by the class IsfxModelElement.
-    
+
     :param xmlElement: The parameter.
     :param xmlParentTag: The parent circuit element tag.
     """
-    
+
     elementParameterIndex = {
         "resistor": {
             "0": {"name": "R", "unit": "Ω"},
-            },
+        },
         "inductor": {
             "0": {"name": "L", "unit": "H"},
-            },
+        },
         "capacitor": {
             "0": {"name": "C", "unit": "F"},
-            },
+        },
         "spherical-diffusion": {
             "0": {"name": "W", "unit": "Ωs^(-½)"},
-            "1": {"name": "k", "unit": "1/s"}
-            },
+            "1": {"name": "k", "unit": "1/s"},
+        },
         "young-goehr-impedance": {
             "0": {"name": "C", "unit": "F"},
             "1": {"name": "p", "unit": ""},
             "2": {"name": "T", "unit": "s"},
-            },
+        },
         "warburg-impedance": {
             "0": {"name": "W", "unit": "Ωs^(-½)"},
-            },
+        },
         "nernst-diffusion": {
             "0": {"name": "W", "unit": "Ωs^(-½)"},
             "1": {"name": "k", "unit": "1/s"},
-            },
+        },
         "finite-diffusion": {
             "0": {"name": "W", "unit": "Ωs^(-½)"},
             "1": {"name": "k", "unit": "1/s"},
-            },
+        },
         "homogenous-reaction-impedance": {
             "0": {"name": "W", "unit": "Ωs^(-½)"},
             "1": {"name": "k", "unit": "1/s"},
-            },
+        },
         "constant-phase-element": {
             "0": {"name": "C_eq", "unit": "F"},
             "1": {"name": "α", "unit": ""},
             "2": {"name": "f_norm", "unit": "Hz"},
-            },
-        }
+        },
+    }
 
     def __init__(self, elementXML, xmlParentTag=None):
         self.xml = elementXML
         self.xmlParentTag = xmlParentTag
         return
-        
+
     def getName(self):
-        """ Returns the name of the parameter.
-        
+        """Returns the name of the parameter.
+
         :returns: The name.
         """
         if self.xml.find("name"):
             return self.xml.attrib["name"]
         else:
-            return IsfxModelElementParameter.elementParameterIndex[self.xmlParentTag][self.xml.attrib["index"]]["name"]
-    
+            return IsfxModelElementParameter.elementParameterIndex[self.xmlParentTag][
+                self.xml.attrib["index"]
+            ]["name"]
+
     def getUnit(self):
-        """ Returns the unit of the parameter.
-        
+        """Returns the unit of the parameter.
+
         :returns: The unit.
         """
         if self.xml.find("unit"):
             return self.xml.attrib["unit"]
         else:
-            return IsfxModelElementParameter.elementParameterIndex[self.xmlParentTag][self.xml.attrib["index"]]["unit"]
-    
+            return IsfxModelElementParameter.elementParameterIndex[self.xmlParentTag][
+                self.xml.attrib["index"]
+            ]["unit"]
+
     def getValue(self):
-        """ Returns the value of the parameter.
-        
+        """Returns the value of the parameter.
+
         :returns: The value.
         """
         return float(self.xml.attrib["value"])
-    
+
     def isFixed(self):
-        """ Returns the fixed state of the parameter.
-        
-        If the parameter is fixed, then it is no longer changed by the fitter. 
-        
+        """Returns the fixed state of the parameter.
+
+        If the parameter is fixed, then it is no longer changed by the fitter.
+
         :returns: True when the value is fixed, else False.
         """
         retval = False
@@ -374,17 +384,17 @@ class IsfxModelElementParameter:
         if fixedState == "0":
             retval = True
         return retval
-    
+
     def __str__(self):
-        """ Returns informations about the parameter as string.
-        
+        """Returns informations about the parameter as string.
+
         :returns: A string with informations.
         """
         return self._parameterToString()
-    
+
     def _parameterToString(self):
-        """ Returns informations about the parameter as string.
-        
+        """Returns informations about the parameter as string.
+
         :returns: A string with informations.
         """
         paramDict = self.xml.attrib
@@ -395,4 +405,3 @@ class IsfxModelElementParameter:
             for key in paramDict.keys():
                 reply += f"{key}: {paramDict[key]} "
         return reply
-
