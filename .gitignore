@@ -1,2 +1,5 @@
 /.project
 /.pydevproject
+
+/dist/
+/zahner_analysis.egg-info/
