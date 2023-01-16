@@ -17,7 +17,13 @@ Additional features are the import of measurement data for CV and I/E measuremen
 
 # 📚 Documentation
 
-The complete documentation of the individual functions can be found on the [API documentation website](https://doc.zahner.de/zahner_analysis/).  
+## Python Package
+
+The complete documentation of the individual functions can be found on the [API documentation website](https://doc.zahner.de/zahner_analysis/).
+
+## REST-API
+
+The REST-API was documented using OpenAPI. The configuration [file](openapi.yaml) is in the repository and the generated html page can be found at the following [url](https://doc.zahner.de/zahner_analysis/analysis_remote.html).
 
 # 🔧 Installation
 

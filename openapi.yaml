@@ -1,0 +1,492 @@
+openapi: 3.0.3
+info:
+  title: Zahner Analysis Remote Evaluation -  RemoteEval
+  version: 3.2.3
+  description: |-
+    JSON / Rest API documentation for the Zahner Analysis RemoteEval Module
+    
+    ## How to start the Server service
+    
+    ### Requirements
+    
+    To start the RemoteEval Server the module _Remote Evaluation_ has to be selected during installation. A valid license is neccessary to use remote evaluation.
+    
+    ### Manual Start
+    
+    In the Menu _Tools_ select: _Remote Evaluation_ and click the button _Start Server_
+    
+    ### Command line start
+    
+    ZahnerAnalysis.exe can also be started with the command line argument  
+    _--remoteEval_  
+    to automatically start the service.
+    
+    Optional parameters can be set:
+    -  _port_ - The IP port where the server will run
+    -  _key_ - The optional API key to limit access to the service
+    -  _buffer_size_ - File Size limit for uploading measurement files / models (for troubleshooting purposes)
+    -  _keep_jobs_ - Number of Jobs to be "remembered" after completion
+    
+    Examples:
+    
+    > ZahnerAnalysis.exe --remoteEval  
+    > ZahnerAnalysis.exe --remoteEval,port=8080  
+    > ZahnerAnalysis.exe --remoteEval,port=8080,key=secretPhrase123
+    > ZahnerAnalysis.exe --remoteEval,port=7777,keep_jobs=100
+  
+    ## Further Documentation
+    
+    If Zahner Analysis is already installed, the manual can usually be found here:  
+    _C:\Program Files\Zahner\ZahnerAnalysis\manual\Zahner Analysis Manual.pdf_
+    
+    ### Useful Links:
+    - [Latest Zahner Analysis Manual (PDF)](https://doc.zahner.de/manuals/zahner_analysis.pdf)
+    - [Our Python client library using the Zahner Analysis Remote Interface](https://github.com/Zahner-elektrik/Zahner-Analysis-Python)
+    - [Python client library documentation](https://doc.zahner.de/zahner_analysis/)
+  contact:
+    email: 'erich.raidas@zahner.de'
+tags:
+  - name: common
+    description: API calls which will always work
+  - name: jobs
+    description: Job management
+servers:
+  -
+    url: 'http://localhost:{port}'
+    description: 'localhost test'
+    variables:
+        port:
+          default: '8081'
+          description: Port of http server
+paths:
+  '/':
+    get:
+      tags:
+        - common
+      summary: A web page with an example form for testing remote evaluation (for humans)
+      description: |-
+        A simple website with a form for testing remote evaluation.
+        
+        The HTML file may be customized if needed and can be found here:  
+        _C:\Program Files\Zahner\ZahnerAnalysis\remote_eval.html_
+      responses:
+        '200':
+          description: The Webpage
+          content:
+            text/html:
+              schema:
+                type: string
+                example: '<html>Zahner Analysis Remote Evaluation <form>[...]</form></html>'
+  '/id':
+    get:
+      tags:
+        - common
+      summary: Get version and status information about Zahner Analysis
+      description: Get version and status information about Zahner Analysis
+      responses:
+        '200':
+          description: Version and status information about Zahner Analysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisRemoteId'
+  '/job/start':
+    post:
+      tags:
+        - jobs
+      summary: Starts a job
+      description: |-
+        Start a Job  
+        The *job-id* should be stored to retrieve the results or query status information later
+      parameters:
+        -
+          name: 'key'
+          in: query
+          required: false
+          schema:
+            type: string
+            format: password
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - eis-file
+                - model-file
+                - job
+              properties:
+                eis-file:
+                  type: string
+                  format: binary
+                  description: 'A .ism file containing the measured data / impedance spectrum'
+                model-file:
+                  type: string
+                  format: binary
+                  description: |-
+                    A .isf or .isfx file containing the model used for fitting  
+                    *Note*: The output model will always be in .isfx format 
+                job:
+                   $ref: '#/components/schemas/JobDescription'
+      responses:
+        '200':
+          description: The Job ID and all used parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    job-id:
+                      type: string
+                      format: uuid
+                    status:
+                      type: string
+                      enum:
+                        - success
+                        - error
+                    parameters:
+                      $ref: '#/components/schemas/EisFitParameterSet'
+        '401':
+          description: API key required but not supplied
+  '/job/{job-id}/status':
+    get:
+      tags:
+        - jobs
+      summary: Get the status of a job
+      description: Get the status of a job
+      parameters:
+        -
+          name: 'job-id'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'key'
+          in: query
+          required: false
+          schema:
+            type: string
+            format: password
+      responses:
+        '200':
+          description: |-
+            All information about the job.
+            
+            The Results are only available after the job has been finished. Messages and Parameters are always available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobInformation'
+        '401':
+          description: API key required but not supplied
+        '404':
+          description: job not found / invalid job-id
+  '/job/{job-id}/model':
+    get:
+      tags:
+        - jobs
+      summary: Download the fitted model
+      description: Download the fitted model
+      parameters:
+        -
+          name: 'job-id'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'key'
+          in: query
+          required: false
+          schema:
+            type: string
+            format: password
+      responses:
+        '200':
+          description: The fitted model in .isfx-format
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: API key required but not supplied
+        '402':
+          description: No valid license for Zahner Analysis
+        '404':
+          description: job not found / invalid job-id
+  '/job/{job-id}/simulation':
+    get:
+      tags:
+        - jobs
+      summary: Download the fitted impedance spectrum
+      description: Download the impedance spectrum generated trough simulation of the fitted model
+      parameters:
+        -
+          name: 'job-id'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'key'
+          in: query
+          required: false
+          schema:
+            type: string
+            format: password
+      responses:
+        '200':
+          description: The impedance spectrum in .ism-format
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: API key required but not supplied
+        '402':
+          description: No valid license for Zahner Analysis
+        '404':
+          description: job not found / invalid job-id
+  '/job/{job-id}/samples':
+    get:
+      tags:
+        - jobs
+      summary: Download the samples used for fitting
+      description: Download an impedance spectra containing the samples which have been selected for fitting
+      parameters:
+        -
+          name: 'job-id'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'key'
+          in: query
+          required: false
+          schema:
+            type: string
+            format: password
+      responses:
+        '200':
+          description: The impedance spectrum in .ism-format
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: API key required but not supplied
+        '402':
+          description: No valid license for Zahner Analysis
+        '404':
+          description: job not found / invalid job-id
+components:
+  schemas:
+    AnalysisRemoteId:
+      type: object
+      properties:
+        build:
+          type: string
+          default: '1002'
+          description: 'Build number of Zahner Analysis'
+        build-abi:
+          type: string
+          default: 'x86_64-little_endian-llp64'
+          description: 'Build application binary interface version of the running version of Zahner Analysis'
+        build-arch:
+          type: string
+          default: 'x86_64'
+          description: 'CPU architecture of the build of Zahner Analysis'
+        license-status:
+          type: string
+          default: 'valid'
+          enum:
+            - 'valid'
+            - 'invalid'
+          description: 'License status (Remote fitting will only work with a valid license)'
+        os-kernel-type:
+          type: string
+          default: 'winnt'
+          description: 'Kernel type of the operating system running the Zahner Analysis service'
+        os-version:
+          type: string
+          default: '10'
+          description: 'Version number of the operating system running the Zahner Analysis service'
+        process-id:
+          type: string
+          default: '1234'
+          description: 'Operating system process id of the Zahner Analysis Service'
+        session-id:
+          type: string
+          format: uuid
+          description: 'internal session id of the current instance of Zahner Analysis'
+        software:
+          type: string
+          default: 'Zahner Analysis'
+          description: 'Name of the remote software service'
+        status:
+          type: string
+          default: 'success'
+          enum:
+            - 'success'
+            - 'error'
+          description: 'Request status (/id should never fail)'
+        version:
+          type: string
+          default: '3.2.3'
+          description: 'Version number of the remote software'
+    JobDescription:
+      type: object
+      description: |-
+        JSON object containing all job parameters  
+        Refer to the Schema for more information
+      required:
+        - job
+        - mode
+      properties:
+        job:
+          type: string
+          enum:
+            - EvalEis.Fit
+            - EvalEis.Sim
+          description: 'The job name, currently only two job types are supported'
+        mode:
+          type: string
+          enum:
+            - queued
+            - block
+          description: |-
+            Request Mode:
+            -  queued: The job will be started assynchronously, the call returns immediately
+            -  block: The call will be stuck until the job is finished, the Job will still be enqueued normally
+        parameters:
+          $ref: '#/components/schemas/EisFitParameterSet'
+    JobInformation:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 'pending'
+            - 'running'
+            - 'done'
+            - 'failed'
+            - 'error'
+          default: 'done'
+        messages:
+          type: array
+          items:
+            type: string
+            pattern: '\d{2}:\d{2}:\d{2},\d{3} .*'
+          example:
+            - '16:48:31,115 created'
+            - '16:48:31,118 start work (FIT)'
+            - '16:48:31,136 prepare data for fitting'
+            - '16:48:31,137 start actual fitting process'
+            - '16:58:37,013 create simulation from new model'
+            - '16:48:37,014 finish work'
+          description: 'Log messages with a 24h timestamp, millisecond accuracy'
+        parameters:
+          $ref: '#/components/schemas/EisFitParameterSet'
+        result:
+          type: object
+          properties:
+            model:
+              type: object
+              additionalProperties:
+                type: object
+              example:
+                Element0:
+                  Parameter0:
+                    error: 0.001
+                    significance: 1
+                    value: 100
+                    value_unit: "R"
+                Element1:
+                  Parameter0:
+                    error: 0.003
+                    significance: 0.99
+                    value: 2e-3
+                    value_unit: "F"
+                  Parameter1:
+                    error: 0.003
+                    significance: 0.99
+                    value: 2e-3
+                    value_unit: "F"
+            overall:
+              type: object
+              properties:
+                impedance_error_max:
+                  type: number
+                impedance_error_mean:
+                  type: number
+                overall_error:
+                  type: number
+                phase_error_max:
+                  type: number
+                phase_error_mean:
+                  type: number
+    EisFitParameterSet:
+      type: object
+      properties:
+        Fit:
+          $ref: '#/components/schemas/FitParameters'
+        Simulation:
+          $ref: '#/components/schemas/SimulationParameters'
+    FitParameters:
+      type: object
+      properties:
+        UpperFrequencyLimit:
+          $ref: '#/components/schemas/UpperFrequencyLimit'
+        LowerFrequencyLimit:
+          $ref: '#/components/schemas/LowerFrequencyLimit'
+        DataSource:
+          $ref: '#/components/schemas/EisFitDataSource'
+        Smoothness: 
+          $ref: '#/components/schemas/Smoothness'
+        NumberOfSamples: 
+          $ref: '#/components/schemas/NumberOfSamples'
+    SimulationParameters:
+      type: object
+      properties:
+        UpperFrequencyLimit:
+          $ref: '#/components/schemas/UpperFrequencyLimit'
+        LowerFrequencyLimit:
+          $ref: '#/components/schemas/LowerFrequencyLimit'
+        NumberOfSamples: 
+          $ref: '#/components/schemas/NumberOfSamples'
+    UpperFrequencyLimit:
+      type: number
+      default: 2e6
+      minimum: 0
+      exclusiveMinimum: true
+    LowerFrequencyLimit:
+      type: number
+      default: 1e-2
+      minimum: 0
+      exclusiveMinimum: true
+    Smoothness:
+      type: number
+      minimum: 0
+      maximum: 1
+      default: 2e-4
+    NumberOfSamples:
+      type: integer
+      minimum: 5
+      default: 100
+    EisFitDataSource:
+      type: string
+      enum:
+        - original
+        - smoothed
+        - zhit
+      
