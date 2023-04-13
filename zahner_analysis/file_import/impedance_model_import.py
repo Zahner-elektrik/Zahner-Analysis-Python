@@ -39,7 +39,7 @@ class IsfxModelImport:
     """
 
     def __init__(self, xmlFilePath=None, xmlString=None):
-        self._filename = None
+        self._filename = "FromString.isfx"
         if xmlString is not None:
             self._xmlString = xmlString
             self._completeXmlTree = et.fromstring(xmlString)
@@ -171,13 +171,7 @@ class IsfxModelImport:
 
         :returns: The name.
         """
-        if self._filename is None:
-            if self._completeXmlTree.attrib["name"] == "":
-                return "FromString.isfx"
-            else:
-                return self._completeXmlTree.attrib["name"]
-        else:
-            return self._filename
+        return self._filename
 
     def getBinaryFileContent(self):
         """Get the content of the file binary.

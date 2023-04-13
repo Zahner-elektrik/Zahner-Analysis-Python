@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zahner_analysis"
+authors = [{ name = "Maximilian Krapp", email = "maximilian.krapp@zahner.de" }]
+description = "Python package for the analysis of electrochemical impedance spectra."
+keywords = [
+    "potentiostat", "electrochemistry", "chemistry", "eis", "cyclic voltammetry", "fuel-cell", "battery",
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "requests",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Intended Audience :: Manufacturing",
+
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Documentation"= "https://doc.zahner.de/zahner_analysis"
+"Examples"= "https://github.com/Zahner-elektrik/Zahner-Analysis-Python/tree/main/Examples"
+"Source Code"= "https://github.com/Zahner-elektrik/Zahner-Analysis-Python"
+"Bug Tracker"= "https://github.com/Zahner-elektrik/Zahner-Analysis-Python/issues"
+"Homepage" = "https://zahner.de/"
+
+[tool.setuptools_scm]
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["zahner_analysis*"]  # package names should match these glob patterns (["*"] by default)
+
+

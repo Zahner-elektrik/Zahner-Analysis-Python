@@ -27,6 +27,7 @@ import numpy as np
 import datetime
 import io
 import os
+from typing import Union
 
 from zahner_analysis.file_import.thales_file_utils import *
 
@@ -41,7 +42,7 @@ class IsmImport:
     :type file: str, bytes, bytearray
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: Union[str, bytes, bytearray]):
         self._filename = "FromBytes.ism"
         if isinstance(filename, bytes) or isinstance(filename, bytearray):
             self._binaryFileContent = filename

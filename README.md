@@ -89,6 +89,13 @@ If measurement data are saved from the examples, they are located in the corresp
 * Load all files from a directory
 * Plot circuit element vs series parameter
 
+## [ZHIT.ipynb](https://github.com/Zahner-elektrik/Zahner-Analysis-Python/blob/main/Examples/ZHIT/ZHIT.ipynb)
+
+* Fit the model to the data
+* Load the data and the model
+* Perform ZHIT evaluation
+* Plot the result
+
 # 📧 Haveing a question?
 
 Send an [mail](mailto:support@zahner.de?subject=Zahner-Analysis-Python%20Question&body=Your%20Message) to our support team.
@@ -102,6 +109,6 @@ If you already found a solution to your problem, **we would love to review your 
 
 Programming is done with the latest Python version at the time of commit.
 
-If you work with equivalent circuits and you need the fit and simulate functions, you need the [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) with its REST interface. To use the REST interface, you need a licensed [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) with at least version **3.2.1**. The [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) is **not required for importing and plotting** data.
+If you work with equivalent circuits and you need the fit and simulate functions, you need the [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) with its REST interface. To use the REST interface, you need a licensed [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) with at least version **3.2.1**. The [Zahner Analysis Software](https://zahner.de/products-details/software/Zahner-Analysis) is **not required for importing and plotting** data.
 
 The packages [matplotlib](https://matplotlib.org/), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) are used to display the measurement results. The [requests package](https://pypi.org/project/requests/) is necessary to communicate with the Zahner Analysis. Jupyter is not necessary, each example is also available as a Python file.

@@ -7,3 +7,8 @@
 
 /dist/
 /zahner_analysis.egg-info/
+/zahner_analysis.egg-info/
+/zahner_analysis.egg-info/
+**/zython
+**/__pycache__
+/.vs

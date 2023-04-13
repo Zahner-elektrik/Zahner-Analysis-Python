@@ -32,12 +32,40 @@ from zahner_analysis.file_import.impedance_model_import import (
 )
 from zahner_analysis.plotting.impedance_plot import bodePlotter, nyquistPlotter
 from zahner_analysis.analysis_tools.analysis_connection import AnalysisConnection
+from zahner_analysis.analysis_tools.error import ZahnerAnalysisError
 
 import os
 import json
 import io
 import logging
 import time
+
+DUMMY_MODEL = """<?xml version="1.0" encoding="UTF-8"?>
+<zahner-impedance-model name="New Model">
+    <zahner-fileinfo>
+        <type>zahner-impedance-model</type>
+        <file-version>3.0</file-version>
+        <created>2023-04-13T07:51:22+02:00</created>
+        <generator>Zahner Analysis</generator>
+        <generator-version>3.3.5</generator-version>
+        <comment></comment>
+        <app-session>cef8c2e3-250d-47ff-9638-ef58933d107e</app-session>
+        <file-id>e0e0c2a4-296f-40d0-9937-58cad6e47464</file-id>
+    </zahner-fileinfo>
+    <parsed-tree>
+        <serial-connect>
+            <resistor name="R0">
+                <parameter index="0" value="100" fitterFixed="1"/>
+            </resistor>
+        </serial-connect>
+    </parsed-tree>
+    <schematics-graph>
+        <node pos-x="0" type="1" name="R0" node-id="0" pos-y="-64">
+            <parameter value="100" fitterFixed="1" index="0"/>
+        </node>
+    </schematics-graph>
+</zahner-impedance-model>
+"""
 
 
 class EisFittingResult:
@@ -301,7 +329,7 @@ class EisFitting:
         Not needed if Zahner Analysis is installed locally.
     """
 
-    classAnalysisConnection = None
+    classAnalysisConnection: AnalysisConnection = None
 
     def __init__(self, analysisConnection: AnalysisConnection = None):
         self._analysisConnection = analysisConnection
@@ -313,6 +341,48 @@ class EisFitting:
             self._analysisConnection = EisFitting.classAnalysisConnection
         return
 
+    def zhit(
+        self,
+        data: IsmImport = None,
+        parameters: dict = {},
+        timeout: float = None,
+    ) -> IsmImport:
+        """
+        Performs the ZHIT evaluation.
+
+        ZHIT is a software tool that uses measured phase data to reconstruct the impedance spectrum.
+        The reconstructed impedance spectrum is then compared to the measured impedance spectrum to validate the measurement and identify any artifacts.
+
+        Links to the topic ZHIT:
+         * https://en.wikipedia.org/wiki/Z-HIT
+         * https://doc.zahner.de/manuals/zahner_analysis.pdf
+
+        Parameter dictionary for optional parameters:
+
+        .. csv-table::
+            :header-rows: 1
+
+            Key , Description
+            Smoothness , Factor with which smoothed. This must be determined empirically in the GUI.
+            NumberOfSamples , Number of samples used for the data. Default all samples.
+
+        .. code-block:: python
+
+            parameters = {
+                "Smoothness": 0.0002,
+                "NumberOfSamples": 20
+            }
+
+        :param data: Data to which the ZHIT is applied.
+        :param parameters: Optional parameters for the ZHIT.
+        :param timeout: Timeout for the caculation.
+        """
+        model = IsfxModelImport(xmlString=DUMMY_MODEL)
+        parameters["DataSource"] = "zhit"
+        # A fit is performed and then everything is discarded except the data used for the fit.
+        fitResult = self.fit(model, data, parameters, timeout=timeout)
+        return fitResult.getFitInputData()
+
     def fit(
         self,
         model: IsfxModelImport,
@@ -321,7 +391,8 @@ class EisFitting:
         simulationParams: dict = {},
         timeout: float = None,
     ) -> EisFittingResult:
-        """Performing the fit.
+        """
+        Performing the fit.
 
         With this method the model is fitted to the data.
         The initial values and the model can be easily developed using the Zahner Analysis GUI.
@@ -382,6 +453,8 @@ class EisFitting:
         jobId = self._startFit(model, data, paramsDict)
         logging.debug("Zahner Analysis job-id: " + jobId)
         fitResult = self._waitForJob(jobId, timeout)
+        if fitResult is None:
+            raise ZahnerAnalysisError("Operation in Zahner Analysis Server failed")
         fittedModel = self._readFittedModel(jobId)
         fittedSimulatedSamples = self._readSimulatedData(jobId)
         fitInputSamples = self._readFitInputData(jobId)
@@ -391,7 +464,8 @@ class EisFitting:
         )
 
     def _startFit(self, model: IsfxModelImport, data: IsmImport, params: dict) -> str:
-        """Function which starts the fit.
+        """
+        Function which starts the fit.
 
         This function sends the model, data and parameters to the Zahner Analysis via HTTP post request.
         The JobId assigned by Zahner Analysis is returned.
@@ -412,7 +486,6 @@ class EisFitting:
         reply = self._analysisConnection.post("/job/start", files=files)
 
         if reply.status_code == 200:
-
             replyContent = json.loads(reply.content)
             jobId = replyContent["job-id"]
 
@@ -426,7 +499,8 @@ class EisFitting:
     def simulate(
         self, model: IsfxModelImport, simulationParams: dict, timeout: float = None
     ) -> IsmImport:
-        """Simulate the model.
+        """
+        Simulate the model.
 
         With this method, an impedance spectrum is generated from the model.
 
@@ -465,7 +539,8 @@ class EisFitting:
         return self._readSimulatedData(jobId)
 
     def _startSimulation(self, model: IsfxModelImport, params: dict) -> str:
-        """Function which starts the simulation.
+        """
+        Function which starts the simulation.
 
         This function sends the model and parameters to the Zahner Analysis via HTTP post request.
         The JobId assigned by Zahner Analysis is returned.
@@ -484,7 +559,6 @@ class EisFitting:
         reply = self._analysisConnection.post("/job/start", files=files)
 
         if reply.status_code == 200:
-
             replyContent = json.loads(reply.content)
             jobId = replyContent.get("job-id")
 
@@ -496,7 +570,8 @@ class EisFitting:
         return jobId
 
     def _waitForJob(self, jobId: str, timeout: float = None):
-        """Function which is waiting for the fit.
+        """
+        Function which is waiting for the fit result.
 
         This function polls the status of the fit operation and reads the fit result as JSON.
 
@@ -518,7 +593,9 @@ class EisFitting:
                 if jobStatus == "done":
                     continueWait = False
                     result = replyContent.get("result")
-
+                elif jobStatus == "failed":
+                    continueWait = False
+                    logging.error("Zahner Analysis fitting failed")
                 else:
                     diffTime = time.time() - startTime
                     if timeout is not None:
@@ -537,7 +614,8 @@ class EisFitting:
         return result
 
     def _readFittedModel(self, jobId) -> IsfxModelImport:
-        """Reading the fitted model from the Zahner Analysis.
+        """
+        Reading the fitted model from the Zahner Analysis.
 
         Reading is done via http get request.
 
@@ -548,7 +626,8 @@ class EisFitting:
         return IsfxModelImport(xmlString=reply.content.decode("utf-8"))
 
     def _readFitInputData(self, jobId) -> IsmImport:
-        """Reading the Samples used for fit from the Zahner Analysis.
+        """
+        Reading the Samples used for fit from the Zahner Analysis.
 
         Reading is done via http get request.
 
@@ -571,7 +650,8 @@ class EisFitting:
 
 
 class EisFittingPlotter:
-    """Class with utility Nyquist and Bode plotting methods.
+    """
+    Class with utility Nyquist and Bode plotting methods.
 
     This class contains methods to display the fit results in the style of Zahner Analysis.
     """
@@ -659,7 +739,8 @@ class EisFittingPlotter:
         minusNyquist=True,
         maximumAbsImpedance: float = None,
     ):
-        """Plotting the data in the Nyquist plot.
+        """
+        Plotting the data in the Nyquist plot.
 
         For plotting matplotlib is used with the function :meth:`zahner_analysis.plotting.impedance_plot.nyquistPlot`.
         With this function or also only with matplotlib the plot can be represented adapted.
