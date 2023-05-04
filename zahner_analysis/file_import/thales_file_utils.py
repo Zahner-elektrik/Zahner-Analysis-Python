@@ -43,6 +43,10 @@ def readI2FromFile(file):
     return int.from_bytes(file.read(2), "big", signed=True)
 
 
+def peekI2FromFile(file):
+    return int.from_bytes(file.peek(2), "big", signed=True)
+
+
 def readI2ArrayFromFile(file, length):
     return np.ndarray(shape=(length,), dtype=">i2", buffer=file.read(2 * length))
 

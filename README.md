@@ -96,7 +96,7 @@ If measurement data are saved from the examples, they are located in the corresp
 * Perform ZHIT evaluation
 * Plot the result
 
-# 📧 Haveing a question?
+# 📧 Having a question?
 
 Send an [mail](mailto:support@zahner.de?subject=Zahner-Analysis-Python%20Question&body=Your%20Message) to our support team.
 

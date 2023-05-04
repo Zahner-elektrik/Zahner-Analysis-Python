@@ -63,10 +63,42 @@ class IsmImport:
             ismFile, self.numberOfSamples
         )
         self.significance = readI2ArrayFromFile(ismFile, self.numberOfSamples)
+
+        self.acqChannels = dict()
+
+        self.measurementDate = readZahnerDate(ismFile)
+
+        self.system = readZahnerStringFromFile(ismFile)
+        self.potential = readZahnerStringFromFile(ismFile)
+        self.current = readZahnerStringFromFile(ismFile)
+        self.temperature = readZahnerStringFromFile(ismFile)
+        self.time = readZahnerStringFromFile(ismFile)
+        self.comment_1 = readZahnerStringFromFile(ismFile)
+        self.comment_2 = readZahnerStringFromFile(ismFile)
+        self.comment_3 = readZahnerStringFromFile(ismFile)
+        self.comment_4 = readZahnerStringFromFile(ismFile)
+
+        self.areaForCurrentDensity = readZahnerStringFromFile(ismFile)
+        serialQuantityStuff = readZahnerStringFromFile(ismFile)
+        acquisition_flag = readI2FromFile(ismFile)
+
+        kValues = readF8ArrayFromFile(ismFile, 32)
+
+        k_value_27 = int(kValues[27])
+
+        if acquisition_flag > 256 and (k_value_27 & 32768) == 32768:
+            self.acqChannels["Voltage/V"] = np.ndarray(
+                shape=(self.numberOfSamples,), dtype=">f8"
+            )
+            self.acqChannels["Current/A"] = np.ndarray(
+                shape=(self.numberOfSamples,), dtype=">f8"
+            )
+
+            for index in range(self.numberOfSamples):
+                self.acqChannels["Voltage/V"][index] = readF8FromFile(ismFile)
+                self.acqChannels["Current/A"][index] = readF8FromFile(ismFile)
+
         self._metaData = bytearray(ismFile.read())
-
-        self.measurementDate = readZahnerDate(io.BytesIO(self._metaData))
-
         ismFile.close()
 
         """
@@ -231,3 +263,20 @@ class IsmImport:
         :returns: bytearray with the file content.
         """
         return self._metaData
+
+    def getTrackTypesList(self) -> list[str]:
+        """
+        returns a list with the different data tracks.
+
+        :returns: List with the track names.
+        """
+        return list(map(str, self.acqChannels.keys()))
+
+    def getTrack(self, track: str) -> np.ndarray:
+        """
+        returns an array with the points for the given track.
+
+        :param track: name of the track
+        :returns: Numpy array with the track.
+        """
+        return self.acqChannels[track]
