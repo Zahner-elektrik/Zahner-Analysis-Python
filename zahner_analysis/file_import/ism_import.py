@@ -27,19 +27,20 @@ import numpy as np
 import datetime
 import io
 import os
+import datetime
 from typing import Union
 
 from zahner_analysis.file_import.thales_file_utils import *
 
 
 class IsmImport:
-    """Class to be able to read ism files (EIS data).
+    """
+    Class to be able to read ism files (EIS data).
 
     This class extracts the data from the ism files.
     It returns the data for the frequency range between the reversal frequency and the end frequency.
 
     :param file: The path to the ism file, or the ism file as bytes or bytearray.
-    :type file: str, bytes, bytearray
     """
 
     def __init__(self, filename: Union[str, bytes, bytearray]):
@@ -121,97 +122,109 @@ class IsmImport:
         self.toIndex += 1
         return
 
-    def getNumberOfSamples(self):
-        """Returns the complete number of samples.
+    def getNumberOfSamples(self) -> int:
+        """
+        Returns the complete number of samples.
 
         This function returns the number of samples in the ism file.
-        This number can be greater than the number of elements returned in the arrays.
-        For the arrays, only the largest frequency range from minimum to maximum frequency is returned,
-        not the overlapping range.
 
         :returns: Number of total samples.
         """
         return self.numberOfSamples
 
-    def getFrequencyArray(self):
-        """Get the frequency points from the measurement.
+    def _arraySlice(
+        self, array: np.ndarray, includeDoubleFrequencies: bool = False
+    ) -> np.ndarray:
+        """
+        Can return the array range without duplicate frequency support points.
 
-        The frequency points between the reversal frequency and the final frequency are returned.
+        For numpy and other libraries there must not be any duplicate frequency support points, therefore this function trims the array range.
 
+        :param array: Array that is processed.
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
+        :return: The eventually trimmed array.
+        """
+        retval = array
+        if includeDoubleFrequencies is False:
+            retval = retval[self.fromIndex : self.toIndex]
+
+        if self.swapNecessary:
+            return np.flip(retval)
+        else:
+            return retval
+
+    def getFrequencyArray(self, includeDoubleFrequencies: bool = False) -> np.ndarray:
+        """
+        Get the frequency points from the measurement.
+
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the frequency points.
         """
-        if self.swapNecessary:
-            return np.flip(self.frequency[self.fromIndex : self.toIndex])
-        else:
-            return self.frequency[self.fromIndex : self.toIndex]
+        return self._arraySlice(self.frequency, includeDoubleFrequencies)
 
-    def getImpedanceArray(self):
-        """Get the impedance points from the measurement.
+    def getImpedanceArray(self, includeDoubleFrequencies: bool = False) -> np.ndarray:
+        """
+        Get the impedance points from the measurement.
 
-        The impedance points between the reversal frequency and the final frequency are returned.
-
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the impedance points.
         """
-        if self.swapNecessary:
-            return np.flip(self.impedance[self.fromIndex : self.toIndex])
-        else:
-            return self.impedance[self.fromIndex : self.toIndex]
+        return self._arraySlice(self.impedance, includeDoubleFrequencies)
 
-    def getPhaseArray(self, degree=False):
-        """Get the phase points from the measurement.
+    def getPhaseArray(
+        self, degree: bool = False, includeDoubleFrequencies: bool = False
+    ) -> np.ndarray:
+        """
+        Get the phase points from the measurement.
 
-        The phase points between the reversal frequency and the final frequency are returned.
-
+        :param degree: True for phase in degree, default radiant.
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the phase points as radiant.
         """
         radToDegree = 1.0
         if degree == True:
             radToDegree = 360 / (2 * np.pi)
-        if self.swapNecessary:
-            return np.flip(self.phase[self.fromIndex : self.toIndex] * radToDegree)
-        else:
-            return self.phase[self.fromIndex : self.toIndex] * radToDegree
 
-    def getComplexImpedanceArray(self):
-        """Get the complex impedance points from the measurement.
+        return self._arraySlice(self.phase, includeDoubleFrequencies) * radToDegree
 
-        The complex impedance points between the reversal frequency and the final frequency are returned.
+    def getComplexImpedanceArray(
+        self, includeDoubleFrequencies: bool = False
+    ) -> np.ndarray:
+        """
+        Get the complex impedance points from the measurement.
 
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the complex impedance points.
         """
-        imp = self.getImpedanceArray()
-        phase = self.getPhaseArray()
-
+        imp = self.getImpedanceArray(includeDoubleFrequencies)
+        phase = self.getPhaseArray(includeDoubleFrequencies=includeDoubleFrequencies)
         return np.cos(phase) * imp + 1j * np.sin(phase) * imp
 
-    def getSignificanceArray(self):
-        """Get the significance points from the measurement.
+    def getSignificanceArray(
+        self, includeDoubleFrequencies: bool = False
+    ) -> np.ndarray:
+        """
+        Get the significance points from the measurement.
 
-        The significance points between the reversal frequency and the final frequency are returned.
-
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the significance points.
         """
-        if self.swapNecessary:
-            return np.flip(self.significance[self.fromIndex : self.toIndex])
-        else:
-            return self.significance[self.fromIndex : self.toIndex]
+        return self._arraySlice(self.significance, includeDoubleFrequencies)
 
-    def getMeasurementDateTimeArray(self):
-        """Get the timestamps from the measurement.
+    def getMeasurementDateTimeArray(
+        self, includeDoubleFrequencies: bool = False
+    ) -> np.ndarray:
+        """
+        Get the timestamps from the measurement.
 
-        The timestamps between the reversal frequency and the final frequency are returned.
-        The smallest time is the reversal point. The start time is not included in this array because
-        the overlapping points are not returned.
-
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the datetime objects.
         """
-        if self.swapNecessary:
-            return np.flip(self.measurementTimeStamp[self.fromIndex : self.toIndex])
-        else:
-            return self.measurementTimeStamp[self.fromIndex : self.toIndex]
+        return self._arraySlice(self.measurementTimeStamp, includeDoubleFrequencies)
 
-    def getMeasurementStartDateTime(self):
-        """Get the start date time of the measurement.
+    def getMeasurementStartDateTime(self) -> datetime.datetime:
+        """
+        Get the start date time of the measurement.
 
         Returns the start datetime of the measurement.
 
@@ -219,8 +232,9 @@ class IsmImport:
         """
         return min(self.measurementTimeStamp)
 
-    def getMeasurementEndDateTime(self):
-        """Get the end date time of the measurement.
+    def getMeasurementEndDateTime(self) -> datetime.datetime:
+        """
+        Get the end date time of the measurement.
 
         Returns the end datetime of the measurement.
 
@@ -229,7 +243,8 @@ class IsmImport:
         return max(self.measurementTimeStamp)
 
     def save(self, filename):
-        """Save the impedance data.
+        """
+        Save the impedance data.
 
         Only the binary file content that has been read is saved. If the data is edited, this is not saved.
 
@@ -239,15 +254,17 @@ class IsmImport:
             f.write(self._binaryFileContent)
         return
 
-    def getFileName(self):
-        """Get the name of the file.
+    def getFileName(self) -> str:
+        """
+        Get the name of the file.
 
         :returns: The filename if the file was opened or "FromBytes.ism" if it was created from bytearrays.
         """
         return self._filename
 
-    def getBinaryFileContent(self):
-        """Get the content of the file binary.
+    def getBinaryFileContent(self) -> bytearray:
+        """
+        Get the content of the file binary.
 
         Returns the file contents as a binary byte array.
 
@@ -255,8 +272,9 @@ class IsmImport:
         """
         return self._binaryFileContent
 
-    def getMetaData(self):
-        """Get the meta data of the file binary.
+    def getMetaData(self) -> bytearray:
+        """
+        Get the meta data of the file binary.
 
         Returns the file contents as a binary byte array.
 
@@ -272,11 +290,14 @@ class IsmImport:
         """
         return list(map(str, self.acqChannels.keys()))
 
-    def getTrack(self, track: str) -> np.ndarray:
+    def getTrack(
+        self, track: str, includeDoubleFrequencies: bool = False
+    ) -> np.ndarray:
         """
         returns an array with the points for the given track.
 
-        :param track: name of the track
+        :param track: name of the track.
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the track.
         """
-        return self.acqChannels[track]
+        return self._arraySlice(self.acqChannels[track], includeDoubleFrequencies)
