@@ -2,34 +2,34 @@
   "model": {
     "C0": {
       "C": {
-        "error": 22.23952421587696,
-        "significance": 0.1972734087094839,
-        "value": 3.774365618586078e-09,
+        "error": 22.257051406805104,
+        "significance": 0.19723417682708994,
+        "value": 3.773411310957254e-09,
         "value_unit": "F"
       }
     },
     "L0": {
       "L": {
-        "error": 31999.734799587455,
-        "significance": 0.00013710322218669514,
-        "value": 8.561199414510511e-10,
+        "error": 56888.56324922176,
+        "significance": 7.716579505775235e-05,
+        "value": 4.818249025174842e-10,
         "value_unit": "H"
       }
     },
     "R0": {
       "R": {
-        "error": 3.8163573200726164,
-        "significance": 0.9659902881424179,
-        "value": 19.570559989017678,
+        "error": 3.816318203110854,
+        "significance": 0.965990288159014,
+        "value": 19.57056300645517,
         "value_unit": "Ω"
       }
     }
   },
   "overall": {
-    "impedance_error_max": 1.3389162694101446,
-    "impedance_error_mean": 0.05785617575170131,
-    "overall_error": 0.6309534573904871,
-    "phase_error_max": 0.47703274745238616,
-    "phase_error_mean": 0.01830431250640266
+    "impedance_error_max": 1.3416431415140713,
+    "impedance_error_mean": 0.05793274751113398,
+    "overall_error": 0.6313524657227112,
+    "phase_error_max": 0.4772818607622024,
+    "phase_error_mean": 0.018307170224364618
   }
 }

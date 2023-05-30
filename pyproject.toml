@@ -16,6 +16,7 @@ dependencies = [
     "numpy",
     "matplotlib",
     "requests",
+    "scipy",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",

@@ -133,7 +133,7 @@ class AnalysisConnection:
                 timeToWaitForCheck > (time.time() - startTime)
                 and self.isOnline() is False
             ):
-                print("Zahner Analysis server offline retry")
+                logging.info("Zahner Analysis server offline - retry")
                 time.sleep(0.5)
             if self.isOnline() is False:
                 logging.error("Zahner Analysis launched but server is offline")
@@ -152,8 +152,12 @@ class AnalysisConnection:
         """
         retval = True
         try:
-            self.get(self._onlineCheckUrl, timeout=timeout)
-            logging.info("Zahner Analysis server online")
+            resp = self.get(self._onlineCheckUrl, timeout=timeout)
+            if resp.json()["license-status"] == "invalid":
+                retval = False
+                logging.info("Zahner Analysis server online - license invalid")
+            else:
+                logging.info("Zahner Analysis server online")
         except:
             logging.info("Zahner Analysis server offline")
             retval = False

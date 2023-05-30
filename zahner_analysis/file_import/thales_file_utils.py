@@ -29,33 +29,35 @@ import struct
 import datetime
 
 
-def readF8FromFile(file):
+def readF8FromFile(file: io.BufferedReader) -> float:
     bytesRead = file.read(8)
     retval = struct.unpack(">d", bytesRead)
     return retval[0]
 
 
-def readF8ArrayFromFile(file, length):
+def readF8ArrayFromFile(file: io.BufferedReader, length: int) -> np.ndarray:
     return np.ndarray(shape=(length,), dtype=">f8", buffer=file.read(8 * length))
 
 
-def readI2FromFile(file):
+def readI2FromFile(file: io.BufferedReader) -> int:
     return int.from_bytes(file.read(2), "big", signed=True)
 
 
-def peekI2FromFile(file):
+def peekI2FromFile(file: io.BufferedReader) -> int:
     return int.from_bytes(file.peek(2), "big", signed=True)
 
 
-def readI2ArrayFromFile(file, length):
+def readI2ArrayFromFile(file: io.BufferedReader, length: int) -> np.ndarray:
     return np.ndarray(shape=(length,), dtype=">i2", buffer=file.read(2 * length))
 
 
-def readI6FromFile(file):
+def readI6FromFile(file: io.BufferedReader) -> int:
     return int.from_bytes(file.read(6), "big", signed=True)
 
 
-def readTimeStampDateTimeArrayFromFile(file, length):
+def readTimeStampDateTimeArrayFromFile(
+    file: io.BufferedReader, length: int
+) -> list[datetime.datetime]:
     timeArray = readF8ArrayFromFile(file, length)
     datetimeArray = []
     for time in timeArray:
@@ -63,7 +65,7 @@ def readTimeStampDateTimeArrayFromFile(file, length):
     return datetimeArray
 
 
-def readZahnerStringFromFile(file):
+def readZahnerStringFromFile(file: io.BufferedReader) -> str:
     length = readI2FromFile(file)
     content = bytearray()
 
@@ -73,7 +75,7 @@ def readZahnerStringFromFile(file):
     return content.decode("ASCII").swapcase()
 
 
-def readZahnerDate(file):
+def readZahnerDate(file: io.BufferedReader) -> datetime.datetime:
     dateString = readZahnerStringFromFile(file)
     date = dateString[0:6]
 
@@ -94,7 +96,7 @@ def readZahnerDate(file):
     return datetime.datetime(year, month, day)
 
 
-def thalesTimeStampToDateTime(timestamp):
+def thalesTimeStampToDateTime(timestamp: int) -> datetime.datetime:
     """Calculation of the time stamp.
 
     The time is in seconds related to 01.01.1980.

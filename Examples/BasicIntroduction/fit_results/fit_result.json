@@ -2,26 +2,26 @@
   "model": {
     "C0": {
       "C": {
-        "error": 0.9082701214636402,
-        "significance": 0.999999999480965,
-        "value": 1.4691896022313242e-10,
+        "error": 0.9082683061964946,
+        "significance": 0.9999999994736887,
+        "value": 1.4691895736476512e-10,
         "value_unit": "F"
       }
     },
     "R0": {
       "R": {
-        "error": 0.20286817876976843,
-        "significance": 0.9997787445777226,
-        "value": 99586742.69038546,
+        "error": 0.20287188666539244,
+        "significance": 0.9997787446201528,
+        "value": 99586738.99074729,
         "value_unit": "Ω"
       }
     }
   },
   "overall": {
-    "impedance_error_max": 1.173644448108941,
-    "impedance_error_mean": 0.060126356206730784,
-    "overall_error": 0.897390026744562,
-    "phase_error_max": 0.5911038199076222,
-    "phase_error_mean": 0.030005678202396
+    "impedance_error_max": 1.1736425025633714,
+    "impedance_error_mean": 0.060126369791981146,
+    "overall_error": 0.8974159899027004,
+    "phase_error_max": 0.5911038180029966,
+    "phase_error_mean": 0.030005676414066915
   }
 }

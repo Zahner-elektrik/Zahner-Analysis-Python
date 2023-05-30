@@ -122,7 +122,7 @@ class IssImport:
         self.voltage = intVoltageRead * (factor / 8000.0) + offset
         return
 
-    def getMeasurementStartDateTime(self):
+    def getMeasurementStartDateTime(self) -> datetime.datetime:
         """Get the start date time of the measurement.
 
         Returns the start datetime of the measurement.
@@ -131,7 +131,7 @@ class IssImport:
         """
         return self.measurementStartDateTime
 
-    def getMeasurementEndDateTime(self):
+    def getMeasurementEndDateTime(self) -> datetime.datetime:
         """Get the end date time of the measurement.
 
         Returns the end datetime of the measurement.
@@ -140,21 +140,21 @@ class IssImport:
         """
         return self.measurementEndDateTime
 
-    def getTimeArray(self):
+    def getTimeArray(self) -> np.ndarray:
         """Reading the measurement time stamps.
 
         :returns: Numpy array with the time points.
         """
         return self.time
 
-    def getCurrentArray(self):
+    def getCurrentArray(self) -> np.ndarray:
         """Reading the measurement current points.
 
         :returns: Numpy array with the current points.
         """
         return self.current
 
-    def getVoltageArray(self):
+    def getVoltageArray(self) -> np.ndarray:
         """Reading the measurement voltage points.
 
         :returns: Numpy array with the voltage points.
@@ -172,14 +172,14 @@ class IssImport:
             f.write(self._binaryFileContent)
         return
 
-    def getFileName(self):
+    def getFileName(self) -> str:
         """Get the name of the file.
 
         :returns: The filename if the file was opened or "FromBytes.isc" if it was created from bytearrays.
         """
         return self._filename
 
-    def getBinaryFileContent(self):
+    def getBinaryFileContent(self) -> bytearray:
         """Get the content of the file binary.
 
         Returns the file contents as a binary byte array.

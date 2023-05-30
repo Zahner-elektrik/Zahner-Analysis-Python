@@ -4,7 +4,6 @@ from zahner_analysis.file_import.ism_import import IsmImport
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
-
     impedanceCircuitModel = IsfxModelImport("rc-model.isfx")
     impedanceData = IsmImport("rc-data.ism")
 

@@ -35,7 +35,7 @@ from zahner_analysis.file_import.thales_file_utils import *
 
 class IsmImport:
     """
-    Class to be able to read ism files (EIS data).
+    Class to be able to read ism files.
 
     This class extracts the data from the ism files.
     It returns the data for the frequency range between the reversal frequency and the end frequency.

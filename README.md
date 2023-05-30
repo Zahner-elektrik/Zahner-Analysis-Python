@@ -96,6 +96,10 @@ If measurement data are saved from the examples, they are located in the corresp
 * Perform ZHIT evaluation
 * Plot the result
 
+## [SetupCompensation.ipynb](https://github.com/Zahner-elektrik/Zahner-Analysis-Python/blob/main/Examples/SetupCompensation/SetupCompensation.ipynb)
+
+* Apply Short-Open-Load correction to EIS data
+
 # 📧 Having a question?
 
 Send an [mail](mailto:support@zahner.de?subject=Zahner-Analysis-Python%20Question&body=Your%20Message) to our support team.
