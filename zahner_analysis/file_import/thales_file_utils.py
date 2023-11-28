@@ -1,4 +1,4 @@
-"""
+r"""
   ____       __                        __    __   __      _ __
  /_  / ___ _/ /  ___  ___ ___________ / /__ / /__/ /_____(_) /__
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
@@ -36,7 +36,7 @@ def readF8FromFile(file: io.BufferedReader) -> float:
 
 
 def readF8ArrayFromFile(file: io.BufferedReader, length: int) -> np.ndarray:
-    return np.ndarray(shape=(length,), dtype=">f8", buffer=file.read(8 * length))
+    return np.array(np.ndarray(shape=(length,), dtype=">f8", buffer=file.read(8 * length)))
 
 
 def readI2FromFile(file: io.BufferedReader) -> int:
@@ -48,7 +48,7 @@ def peekI2FromFile(file: io.BufferedReader) -> int:
 
 
 def readI2ArrayFromFile(file: io.BufferedReader, length: int) -> np.ndarray:
-    return np.ndarray(shape=(length,), dtype=">i2", buffer=file.read(2 * length))
+    return np.array(np.ndarray(shape=(length,), dtype=">i2", buffer=file.read(2 * length)))
 
 
 def readI6FromFile(file: io.BufferedReader) -> int:
@@ -75,23 +75,29 @@ def readZahnerStringFromFile(file: io.BufferedReader) -> str:
     return content.decode("ASCII").swapcase()
 
 
-def readZahnerDate(file: io.BufferedReader) -> datetime.datetime:
+def readZahnerDate(file: io.BufferedReader) -> datetime.datetime:    
     dateString = readZahnerStringFromFile(file)
-    date = dateString[0:6]
+    try:
+        date = dateString[0:6]
 
-    day = int(date[0:2])
-    month = int(date[2:4])
-    year = int(date[4:6])
+        day = int(date[0:2])
+        month = int(date[2:4])
+        year = int(date[4:6])
 
-    """
-    Only the last two digits of the date are saved.
-    It is assumed that the measurement was carried out between 1970 and 2070.
-    A software update is necessary in the year 2070 at the latest.
-    """
-    if year < 70:
-        year += 2000
-    else:
-        year += 1900
+        """
+        Only the last two digits of the date are saved.
+        It is assumed that the measurement was carried out between 1970 and 2070.
+        A software update is necessary in the year 2070 at the latest.
+        """
+        if year < 70:
+            year += 2000
+        else:
+            year += 1900
+    except:
+        # fallback date
+        day = 1
+        month = 1
+        year = 1970
 
     return datetime.datetime(year, month, day)
 

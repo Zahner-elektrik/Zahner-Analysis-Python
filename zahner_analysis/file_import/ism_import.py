@@ -1,4 +1,4 @@
-"""
+r"""
   ____       __                        __    __   __      _ __
  /_  / ___ _/ /  ___  ___ ___________ / /__ / /__/ /_____(_) /__
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
@@ -65,39 +65,45 @@ class IsmImport:
         )
         self.significance = readI2ArrayFromFile(ismFile, self.numberOfSamples)
 
-        self.acqChannels = dict()
+        try:
+            """
+            optional file contents
+            """
+            self.acqChannels = dict()
 
-        self.measurementDate = readZahnerDate(ismFile)
+            self.measurementDate = readZahnerDate(ismFile)
 
-        self.system = readZahnerStringFromFile(ismFile)
-        self.potential = readZahnerStringFromFile(ismFile)
-        self.current = readZahnerStringFromFile(ismFile)
-        self.temperature = readZahnerStringFromFile(ismFile)
-        self.time = readZahnerStringFromFile(ismFile)
-        self.comment_1 = readZahnerStringFromFile(ismFile)
-        self.comment_2 = readZahnerStringFromFile(ismFile)
-        self.comment_3 = readZahnerStringFromFile(ismFile)
-        self.comment_4 = readZahnerStringFromFile(ismFile)
+            self.system = readZahnerStringFromFile(ismFile)
+            self.potential = readZahnerStringFromFile(ismFile)
+            self.current = readZahnerStringFromFile(ismFile)
+            self.temperature = readZahnerStringFromFile(ismFile)
+            self.time = readZahnerStringFromFile(ismFile)
+            self.comment_1 = readZahnerStringFromFile(ismFile)
+            self.comment_2 = readZahnerStringFromFile(ismFile)
+            self.comment_3 = readZahnerStringFromFile(ismFile)
+            self.comment_4 = readZahnerStringFromFile(ismFile)
 
-        self.areaForCurrentDensity = readZahnerStringFromFile(ismFile)
-        serialQuantityStuff = readZahnerStringFromFile(ismFile)
-        acquisition_flag = readI2FromFile(ismFile)
+            self.areaForCurrentDensity = readZahnerStringFromFile(ismFile)
+            serialQuantityStuff = readZahnerStringFromFile(ismFile)
+            acquisition_flag = readI2FromFile(ismFile)
 
-        kValues = readF8ArrayFromFile(ismFile, 32)
+            kValues = readF8ArrayFromFile(ismFile, 32)
 
-        k_value_27 = int(kValues[27])
+            k_value_27 = int(kValues[27])
 
-        if acquisition_flag > 256 and (k_value_27 & 32768) == 32768:
-            self.acqChannels["Voltage/V"] = np.ndarray(
-                shape=(self.numberOfSamples,), dtype=">f8"
-            )
-            self.acqChannels["Current/A"] = np.ndarray(
-                shape=(self.numberOfSamples,), dtype=">f8"
-            )
+            if acquisition_flag > 256 and (k_value_27 & 32768) == 32768:
+                self.acqChannels["Voltage/V"] = np.ndarray(
+                    shape=(self.numberOfSamples,), dtype=">f8"
+                )
+                self.acqChannels["Current/A"] = np.ndarray(
+                    shape=(self.numberOfSamples,), dtype=">f8"
+                )
 
-            for index in range(self.numberOfSamples):
-                self.acqChannels["Voltage/V"][index] = readF8FromFile(ismFile)
-                self.acqChannels["Current/A"][index] = readF8FromFile(ismFile)
+                for index in range(self.numberOfSamples):
+                    self.acqChannels["Voltage/V"][index] = readF8FromFile(ismFile)
+                    self.acqChannels["Current/A"][index] = readF8FromFile(ismFile)
+        except:
+            pass
 
         self._metaData = bytearray(ismFile.read())
         ismFile.close()

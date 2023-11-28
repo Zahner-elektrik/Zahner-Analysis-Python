@@ -1,4 +1,4 @@
-"""
+r"""
   ____       __                        __    __   __      _ __
  /_  / ___ _/ /  ___  ___ ___________ / /__ / /__/ /_____(_) /__
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
@@ -36,7 +36,7 @@ class IsmExport:
     With this class only impedances to different frequency points can be stored.
 
     However, the ism files are not complete and can no longer be loaded in Thales, nor do they contain any meta data.
-    ACQ data is also lost.
+    ACQ and DC data is also lost.
 
     :param frequency: Array with the frequency data.
     :param impedance: Array with the impedance data.
@@ -80,6 +80,21 @@ class IsmExport:
         self._binaryFileContent += self.tmpPhase.tobytes()
         self._binaryFileContent += self.tmpTime.tobytes()
         self._binaryFileContent += self.tmpSig.tobytes()
+
+        #add empty strings
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+
         self._binaryFileContent += metaData
         return
 

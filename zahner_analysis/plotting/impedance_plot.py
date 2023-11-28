@@ -1,4 +1,4 @@
-"""
+r"""
   ____       __                        __    __   __      _ __
  /_  / ___ _/ /  ___  ___ ___________ / /__ / /__/ /_____(_) /__
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
@@ -138,7 +138,7 @@ def bodePlotter(
 
     impedanceAxis.loglog(frequencies, np.abs(impedanceAbsolute), **argsImpedanceAxis)
     impedanceAxis.xaxis.set_major_formatter(EngFormatter(unit="Hz"))
-    impedanceAxis.yaxis.set_major_formatter(EngFormatter(unit="$\Omega$"))
+    impedanceAxis.yaxis.set_major_formatter(EngFormatter(unit=r"$\Omega$"))
     impedanceAxis.set_xlabel(r"f")
     impedanceAxis.set_ylabel(r"|Z|")
     if zTogetherPhase:
@@ -279,8 +279,8 @@ def nyquistPlotter(
     nyquistAxis.plot(np.real(Z), np.imag(Z), **argsNyquistAxis)
     nyquistAxis.grid(which="both", linestyle="dashed", linewidth=0.5)
     nyquistAxis.set_aspect("equal")
-    nyquistAxis.xaxis.set_major_formatter(EngFormatter(unit="$\Omega$"))
-    nyquistAxis.yaxis.set_major_formatter(EngFormatter(unit="$\Omega$"))
+    nyquistAxis.xaxis.set_major_formatter(EngFormatter(unit=r"$\Omega$"))
+    nyquistAxis.yaxis.set_major_formatter(EngFormatter(unit=r"$\Omega$"))
     nyquistAxis.set_xlabel(r"$Z_{\rm re}$")
 
     if minusNyquist:
