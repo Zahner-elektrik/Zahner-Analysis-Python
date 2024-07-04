@@ -14,7 +14,8 @@ phase = impedanceData.getPhaseArray()
     frequencies=frequencies,
     impedanceAbsolute=impedanceAbsolut,
     phase=phase,
-    zTogetherPhase=False)
+    zTogetherPhase=False,
+)
 fig1.set_size_inches(18, 10)
 plt.show()
 
@@ -40,7 +41,8 @@ phaseEdit = np.insert(phaseEdit, 0, phaseEdit[0])
     frequencies=frequencies,
     impedanceAbsolute=impedanceAbsolut,
     phase=phase,
-    zTogetherPhase=False)
+    zTogetherPhase=False,
+)
 (fig2, (impedanceAxis2, phaseAxis2)) = bodePlotter(
     axes=(impedanceAxis1, phaseAxis1),
     frequencies=frequenciesEdit,
@@ -48,7 +50,8 @@ phaseEdit = np.insert(phaseEdit, 0, phaseEdit[0])
     phase=phaseEdit,
     zTogetherPhase=False,
     argsImpedanceAxis={"linestyle": "solid", "marker": None},
-    argsPhaseAxis={"linestyle": "solid", "marker": None})
+    argsPhaseAxis={"linestyle": "solid", "marker": None},
+)
 
 impedanceAxis2.legend(["Original Data", "Edited Data"])
 phaseAxis2.legend(["Original Data", "Edited Data"])
@@ -57,6 +60,13 @@ fig2.set_size_inches(18, 10)
 plt.show()
 
 
-exportFile = IsmExport(frequency=frequenciesEdit,impedance=impedanceAbsolutEdit,phase=phaseEdit)
+exportFile = IsmExport(
+    frequency=frequenciesEdit,
+    impedance=impedanceAbsolutEdit,
+    phase=phaseEdit,
+    system_string=impedanceData.system,
+    potential_string=impedanceData.potential,
+    current_string=impedanceData.current,
+    metaData=impedanceData.getMetaData(),
+)
 exportFile.writeToFile("li-ion-battery-edited.ism")
-

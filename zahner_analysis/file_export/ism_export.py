@@ -26,6 +26,7 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import numpy as np
 from zahner_analysis.file_import.ism_import import IsmImport
+from zahner_analysis.file_import.thales_file_utils import writeZahnerStringToBytes
 from typing import Optional
 
 
@@ -41,6 +42,16 @@ class IsmExport:
     :param frequency: Array with the frequency data.
     :param impedance: Array with the impedance data.
     :param phase: Array with the phase data.
+    :param system_string: String with information.
+    :param potential_string: String with information.
+    :param current_string: String with information.
+    :param temperature_string: String with information.
+    :param time_string: String with information.
+    :param comment_1_string: String with information.
+    :param comment_2_string: String with information.
+    :param comment_3_string: String with information.
+    :param comment_4_string: String with information.
+    :param areaForCurrentDensity_string: String with information.
     :param metaData: Binary metadata.
     """
 
@@ -50,6 +61,16 @@ class IsmExport:
         frequency: Optional[list[float]] = None,
         impedance: Optional[list[float]] = None,
         phase: Optional[list[float]] = None,
+        system_string: Optional[str] = "",
+        potential_string: Optional[str] = "",
+        current_string: Optional[str] = "",
+        temperature_string: Optional[str] = "",
+        time_string: Optional[str] = "",
+        comment_1_string: Optional[str] = "",
+        comment_2_string: Optional[str] = "",
+        comment_3_string: Optional[str] = "",
+        comment_4_string: Optional[str] = "",
+        areaForCurrentDensity_string: Optional[str] = "",
         metaData: bytearray = bytearray(),
     ):
         self.startOfFile = bytearray(b"\x00\x00\xff\xff\xff\xfe")
@@ -81,19 +102,23 @@ class IsmExport:
         self._binaryFileContent += self.tmpTime.tobytes()
         self._binaryFileContent += self.tmpSig.tobytes()
 
-        #add empty strings
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
-        self._binaryFileContent += int.to_bytes(0,length=2,byteorder="big")
+        # add empty strings
+        self._binaryFileContent += int.to_bytes(0, length=2, byteorder="big")  # date
+        self._binaryFileContent += writeZahnerStringToBytes(system_string)
+        self._binaryFileContent += writeZahnerStringToBytes(potential_string)
+        self._binaryFileContent += writeZahnerStringToBytes(current_string)
+        self._binaryFileContent += writeZahnerStringToBytes(temperature_string)
+        self._binaryFileContent += writeZahnerStringToBytes(time_string)
+        self._binaryFileContent += writeZahnerStringToBytes(comment_1_string)
+        self._binaryFileContent += writeZahnerStringToBytes(comment_2_string)
+        self._binaryFileContent += writeZahnerStringToBytes(comment_3_string)
+        self._binaryFileContent += writeZahnerStringToBytes(comment_4_string)
+        self._binaryFileContent += writeZahnerStringToBytes(
+            areaForCurrentDensity_string
+        )
+        self._binaryFileContent += int.to_bytes(
+            0, length=2, byteorder="big"
+        )  # serialQuantityStuff
 
         self._binaryFileContent += metaData
         return

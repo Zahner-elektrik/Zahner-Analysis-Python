@@ -100,7 +100,7 @@ class IscImport:
         offset = 0.0
         factor = 1.0
 
-        popfPattern = "^\s*(.*?),\s*(.*?)\s*PO.PF *(.*?), *(.*)$"
+        popfPattern = r"^\s*(.*?),\s*(.*?)\s*PO.PF *(.*?), *(.*)$"
 
         popfMatch = re.search(popfPattern, self.POPF)
 
@@ -112,7 +112,7 @@ class IscImport:
         else:
             # fallback to old format for older ISC files:
 
-            popfPattern = "^\s*(.*?),\\s*(.*?)\s*PO.PF.*"
+            popfPattern = r"^\s*(.*?),\\s*(.*?)\s*PO.PF.*"
             popfMatch = re.search(popfPattern, self.POPF)
 
             if popfMatch:

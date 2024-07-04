@@ -23,6 +23,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import numpy as np
 import io
 import struct
@@ -36,7 +37,9 @@ def readF8FromFile(file: io.BufferedReader) -> float:
 
 
 def readF8ArrayFromFile(file: io.BufferedReader, length: int) -> np.ndarray:
-    return np.array(np.ndarray(shape=(length,), dtype=">f8", buffer=file.read(8 * length)))
+    return np.array(
+        np.ndarray(shape=(length,), dtype=">f8", buffer=file.read(8 * length))
+    )
 
 
 def readI2FromFile(file: io.BufferedReader) -> int:
@@ -48,7 +51,9 @@ def peekI2FromFile(file: io.BufferedReader) -> int:
 
 
 def readI2ArrayFromFile(file: io.BufferedReader, length: int) -> np.ndarray:
-    return np.array(np.ndarray(shape=(length,), dtype=">i2", buffer=file.read(2 * length)))
+    return np.array(
+        np.ndarray(shape=(length,), dtype=">i2", buffer=file.read(2 * length))
+    )
 
 
 def readI6FromFile(file: io.BufferedReader) -> int:
@@ -75,7 +80,21 @@ def readZahnerStringFromFile(file: io.BufferedReader) -> str:
     return content.decode("ASCII").swapcase()
 
 
-def readZahnerDate(file: io.BufferedReader) -> datetime.datetime:    
+def writeZahnerStringToBytes(input_string: str) -> bytes:
+    # Convert the string to ASCII and swap case
+    swapped_string = input_string.swapcase()
+    ascii_bytes = swapped_string.encode("ASCII")
+
+    # Get the length of the string and convert to 2 bytes
+    length = len(ascii_bytes)
+    length_bytes = length.to_bytes(2, byteorder="big", signed=True)
+
+    # Combine the length bytes and the ASCII string bytes
+    result_bytes = length_bytes + ascii_bytes
+    return result_bytes
+
+
+def readZahnerDate(file: io.BufferedReader) -> datetime.datetime:
     dateString = readZahnerStringFromFile(file)
     try:
         date = dateString[0:6]
