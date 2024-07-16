@@ -20,35 +20,34 @@ if __name__ == "__main__":
     phaseAxis1.legend(["Original", "ZHIT"])
     fig1.set_size_inches(18, 10)
 
-    fitParams = {
-        "DataSource": "zhit",
-        "Smoothness": 0.0002,
-        "NumberOfSamples": 40,
-    }
+fitParams = {
+    "DataSource": "zhit",
+    "Smoothness": 0.0002,
+    "NumberOfSamples": 40,
+}
 
-    impedanceCircuitModel = IsfxModelImport("RC-R-L.isfx")
-    fittingResult = fitting.fit(
-        impedanceCircuitModel, dataWithDrift, fitParams=fitParams
-    )
-    print(fittingResult)
+impedanceCircuitModel = IsfxModelImport("RC-R-L.isfx")
+fittingResult = fitting.fit(impedanceCircuitModel, dataWithDrift, fitParams=fitParams)
+print(fittingResult)
 
-    (fig2, (impedanceAxis2, phaseAxis2)) = bodePlotter(impedanceObject=dataWithDrift)
-    (fig2, (impedanceAxis2, phaseAxis2)) = bodePlotter(
-        (impedanceAxis2, phaseAxis2),
-        impedanceObject=fittingResult.getFittedSimulatedData(),
-        argsImpedanceAxis={"linestyle": "solid", "marker": None},
-        argsPhaseAxis={"linestyle": "solid", "marker": None},
-    )
-    (fig2, (impedanceAxis2, phaseAxis2)) = bodePlotter(
-        (impedanceAxis2, phaseAxis2),
-        impedanceObject=fittingResult.getFitInputData(),
-        argsImpedanceAxis={"linestyle": "None", "marker": "x"},
-        argsPhaseAxis={"linestyle": "None", "marker": "x"},
-    )
+(fig2, (impedanceAxis2, phaseAxis2)) = bodePlotter(impedanceObject=dataWithDrift)
+(fig2, (impedanceAxis2, phaseAxis2)) = bodePlotter(
+    (impedanceAxis2, phaseAxis2),
+    impedanceObject=fittingResult.getFittedSimulatedData(),
+    argsImpedanceAxis={"linestyle": "solid", "marker": None},
+    argsPhaseAxis={"linestyle": "solid", "marker": None},
+)
+(fig2, (impedanceAxis2, phaseAxis2)) = bodePlotter(
+    (impedanceAxis2, phaseAxis2),
+    impedanceObject=fittingResult.getFitInputData(),
+    argsImpedanceAxis={"linestyle": "None", "marker": "x"},
+    argsPhaseAxis={"linestyle": "None", "marker": "x"},
+)
 
-    phaseAxis2.legend(["Original", "Fitted", "ZHIT"])
-    fig2.set_size_inches(18, 10)
+phaseAxis2.legend(["Original", "Fitted", "ZHIT"])
+fig2.set_size_inches(18, 10)
 
-    fittingResult.getFitInputData().save("ZHIT.ism")
+fittingResult.getFitInputData().save("ZHIT.ism")
 
-    plt.show()
+plt.show()
+

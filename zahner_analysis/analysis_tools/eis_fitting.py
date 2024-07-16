@@ -68,33 +68,6 @@ DUMMY_MODEL = """<?xml version="1.0" encoding="UTF-8"?>
 </zahner-impedance-model>
 """
 
-DUMMY_MODEL = """<?xml version="1.0" encoding="UTF-8"?>
-<zahner-impedance-model name="New Model">
-    <zahner-fileinfo>
-        <type>zahner-impedance-model</type>
-        <file-version>3.0</file-version>
-        <created>2023-04-13T07:51:22+02:00</created>
-        <generator>Zahner Analysis</generator>
-        <generator-version>3.3.5</generator-version>
-        <comment></comment>
-        <app-session>cef8c2e3-250d-47ff-9638-ef58933d107e</app-session>
-        <file-id>e0e0c2a4-296f-40d0-9937-58cad6e47464</file-id>
-    </zahner-fileinfo>
-    <parsed-tree>
-        <serial-connect>
-            <resistor name="R0">
-                <parameter index="0" value="100" fitterFixed="1"/>
-            </resistor>
-        </serial-connect>
-    </parsed-tree>
-    <schematics-graph>
-        <node pos-x="0" type="1" name="R0" node-id="0" pos-y="-64">
-            <parameter value="100" fitterFixed="1" index="0"/>
-        </node>
-    </schematics-graph>
-</zahner-impedance-model>
-"""
-
 
 class EisFittingResult:
     """This class contains the results of the fit.

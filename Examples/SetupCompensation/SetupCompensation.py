@@ -18,36 +18,37 @@ if __name__ == "__main__":
         referenceData=None,
     )
 
-    compensationData.setSmoothingWindowLength(3)
-    compensationData.setSmoothingPolyOrder(2)
+compensationData.setSmoothingWindowLength(3)
+compensationData.setSmoothingPolyOrder(2)
 
-    compensatedData = compensationData.compensateIsm(originalData)
+compensatedData = compensationData.compensateIsm(originalData)
 
-    (fig1, (impedanceAxis1, phaseAxis1)) = bodePlotter(
-        impedanceObject=originalData,
-        zTogetherPhase=False,
-        absPhase=False,
-        argsImpedanceAxis={"marker": None},
-        argsPhaseAxis={"marker": None},
-    )
+(fig1, (impedanceAxis1, phaseAxis1)) = bodePlotter(
+    impedanceObject=originalData,
+    zTogetherPhase=False,
+    absPhase=False,
+    argsImpedanceAxis={"marker": None},
+    argsPhaseAxis={"marker": None},
+)
 
-    (fig1, (impedanceAxis1, phaseAxis1)) = bodePlotter(
-        (impedanceAxis1, phaseAxis1),
-        impedanceObject=compensatedData,
-        zTogetherPhase=False,
-        absPhase=False,
-        argsImpedanceAxis={"linestyle": "solid", "marker": None},
-        argsPhaseAxis={"linestyle": "solid", "marker": None},
-    )
+(fig1, (impedanceAxis1, phaseAxis1)) = bodePlotter(
+    (impedanceAxis1, phaseAxis1),
+    impedanceObject=compensatedData,
+    zTogetherPhase=False,
+    absPhase=False,
+    argsImpedanceAxis={"linestyle": "solid", "marker": None},
+    argsPhaseAxis={"linestyle": "solid", "marker": None},
+)
 
-    impedanceAxis1.legend(["Measured Data", "Compensated Data"])
-    phaseAxis1.legend(["Measured Data", "Compensated Data"])
+impedanceAxis1.legend(["Measured Data", "Compensated Data"])
+phaseAxis1.legend(["Measured Data", "Compensated Data"])
 
-    impedanceAxis1.set_ylim([250e-6, 1e-3])
-    phaseAxis1.set_ylim([-15.0, +45.0])
+impedanceAxis1.set_ylim([250e-6, 1e-3])
+phaseAxis1.set_ylim([-15.0, +45.0])
 
-    fig1.set_size_inches(18, 10)
-    plt.show()
+fig1.set_size_inches(18, 10)
+plt.show()
 
-    exportFile = IsmExport(compensatedData)
-    exportFile.writeToFile(compensatedDataFileName)
+exportFile = IsmExport(compensatedData)
+exportFile.writeToFile(compensatedDataFileName)
+

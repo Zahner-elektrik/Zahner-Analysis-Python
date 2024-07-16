@@ -23,6 +23,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import numpy as np
 import datetime
 import io
@@ -35,13 +36,31 @@ from zahner_analysis.file_import.thales_file_utils import *
 
 class IsmImport:
     """
-    Class to be able to read ism files.
+    Class to be able to read .ism file formats with Python.
 
-    This class extracts the data from the ism files.
-    It returns the data for the frequency range between the reversal frequency and the end frequency.
+    By default, the data tracks contain the range between the reversal frequency and the end frequency.
+
+    The class contains getters that can be used to read out the available meta data for the measurement.
+    These are mostly strings that can be freely assigned by the user, so there is no automatic conversion to floating point numbers.
 
     :param file: The path to the ism file, or the ism file as bytes or bytearray.
     """
+
+    measurementDate: datetime.datetime
+    system: str = ""
+    voltage: str = ""
+    current: str = ""
+    temperature: str = ""
+    timeWindow: str = ""
+
+    comment_1: str = ""
+    comment_2: str = ""
+    comment_3: str = ""
+    comment_4: str = ""
+
+    electrodeArea: str = ""
+    amplitude: float = 0.0
+    metaDataAcqParsingErrorOccurred: bool = False
 
     def __init__(self, filename: Union[str, bytes, bytearray]):
         self._filename = "FromBytes.ism"
@@ -65,32 +84,31 @@ class IsmImport:
         )
         self.significance = readI2ArrayFromFile(ismFile, self.numberOfSamples)
 
+        self.acqChannels = dict()
         try:
-            """
-            optional file contents
-            """
-            self.acqChannels = dict()
-
             self.measurementDate = readZahnerDate(ismFile)
 
             self.system = readZahnerStringFromFile(ismFile)
-            self.potential = readZahnerStringFromFile(ismFile)
+            self.voltage = readZahnerStringFromFile(ismFile)
             self.current = readZahnerStringFromFile(ismFile)
             self.temperature = readZahnerStringFromFile(ismFile)
-            self.time = readZahnerStringFromFile(ismFile)
+            self.timeWindow = readZahnerStringFromFile(ismFile)
+
             self.comment_1 = readZahnerStringFromFile(ismFile)
             self.comment_2 = readZahnerStringFromFile(ismFile)
             self.comment_3 = readZahnerStringFromFile(ismFile)
             self.comment_4 = readZahnerStringFromFile(ismFile)
 
-            self.areaForCurrentDensity = readZahnerStringFromFile(ismFile)
+            self.electrodeArea = readZahnerStringFromFile(ismFile)
             serialQuantityStuff = readZahnerStringFromFile(ismFile)
             acquisition_flag = readI2FromFile(ismFile)
 
             kValues = readF8ArrayFromFile(ismFile, 32)
 
-            k_value_27 = int(kValues[27])
+            self.amplitude = kValues[25] / 1000.0
 
+            # ACQ
+            k_value_27 = int(kValues[27])
             if acquisition_flag > 256 and (k_value_27 & 32768) == 32768:
                 self.acqChannels["Voltage/V"] = np.ndarray(
                     shape=(self.numberOfSamples,), dtype=">f8"
@@ -103,7 +121,10 @@ class IsmImport:
                     self.acqChannels["Voltage/V"][index] = readF8FromFile(ismFile)
                     self.acqChannels["Current/A"][index] = readF8FromFile(ismFile)
         except:
-            pass
+            #: Unfortunately, there are many old versions of the file format, which can cause errors.
+            #: If the meta data is empty or does not contain the expected numbers, you can check whether this variable is True,
+            #: then an error has occurred during the parsing of the file.
+            self.metaDataAcqParsingErrorOccurred = True
 
         self._metaData = bytearray(ismFile.read())
         ismFile.close()
@@ -137,27 +158,6 @@ class IsmImport:
         :returns: Number of total samples.
         """
         return self.numberOfSamples
-
-    def _arraySlice(
-        self, array: np.ndarray, includeDoubleFrequencies: bool = False
-    ) -> np.ndarray:
-        """
-        Can return the array range without duplicate frequency support points.
-
-        For numpy and other libraries there must not be any duplicate frequency support points, therefore this function trims the array range.
-
-        :param array: Array that is processed.
-        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
-        :return: The eventually trimmed array.
-        """
-        retval = array
-        if includeDoubleFrequencies is False:
-            retval = retval[self.fromIndex : self.toIndex]
-
-        if self.swapNecessary:
-            return np.flip(retval)
-        else:
-            return retval
 
     def getFrequencyArray(self, includeDoubleFrequencies: bool = False) -> np.ndarray:
         """
@@ -290,7 +290,12 @@ class IsmImport:
 
     def getTrackTypesList(self) -> list[str]:
         """
-        returns a list with the different data tracks.
+        Get a list with the different data tracks.
+
+        If current and voltage were also measured, the tracks have the following names, for example:
+
+        * `Voltage/V`
+        * `Current/A`
 
         :returns: List with the track names.
         """
@@ -300,10 +305,99 @@ class IsmImport:
         self, track: str, includeDoubleFrequencies: bool = False
     ) -> np.ndarray:
         """
-        returns an array with the points for the given track.
+        Returns an array with the points for the given track.
 
         :param track: name of the track.
         :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
         :returns: Numpy array with the track.
         """
         return self._arraySlice(self.acqChannels[track], includeDoubleFrequencies)
+
+    def getSystemString(self) -> str:
+        """
+        Get the optional user-defined string describing the chemical system.
+
+        :returns: Returns the user-defined system string.
+        """
+        return self.system
+
+    def getStartVoltageString(self) -> str:
+        """
+        Get measured voltage before the measurement, may be indicated with amplitudes.
+
+        :returns: String with dc value and optionally amplitude.
+        """
+        return self.voltage
+
+    def getStartCurrentString(self) -> str:
+        """
+        Get measured current before the measurement, may be indicated with amplitudes.
+
+        :returns: String with dc value and optionally amplitude.
+        """
+        return self.current
+
+    def getStartTemperatureString(self) -> str:
+        """
+        Get the start temperature string.
+
+        This string only contains a meaningful value if a TEMP-U or TEMP-U2 card with temperature sensor is plugged in and configured correctly.
+
+        :returns: String with the value.
+        """
+        return self.temperature
+
+    def getTimeWindowString(self) -> str:
+        """
+        Get the string with the time window of the measurement.
+
+        :returns: String with the value.
+        """
+        return self.timeWindow
+
+    def getCommentStrings(self) -> str:
+        """
+        Get the string with the 4 possible user-defined comment lines.
+
+        :returns: The 4 comment lines separated by `\\\\n`.
+        """
+        return "\n".join(
+            [self.comment_1, self.comment_2, self.comment_3, self.comment_4]
+        )
+
+    def getElectrodeAreaString(self) -> str:
+        """
+        Get the optional user-defined electrode area string.
+
+        :returns: String with the value.
+        """
+        return self.electrodeArea
+
+    def getAmplitude(self) -> float:
+        """
+        Get the amplitude used for the measurement.
+
+        :returns: Amplitude as float in V or A.
+        """
+        return self.amplitude
+
+    def _arraySlice(
+        self, array: np.ndarray, includeDoubleFrequencies: bool = False
+    ) -> np.ndarray:
+        """
+        Can return the array range without duplicate frequency support points.
+
+        For numpy and other libraries there must not be any duplicate frequency support points, therefore this function trims the array range.
+
+        :param array: Array that is processed.
+        :param includeDoubleFrequencies: If True, all measurement data are returned, if False, only the largest non-overlapping area is returned. Defaults to False.
+        :return: The eventually trimmed array.
+        """
+        retval = array
+        if includeDoubleFrequencies is False:
+            retval = retval[self.fromIndex : self.toIndex]
+
+        if self.swapNecessary:
+            return np.flip(retval)
+        else:
+            return retval

@@ -42,7 +42,7 @@ def smoothIsm(ism: IsmImport, window_length: int, polyorder: int) -> IsmImport:
 
 
 class SetupCompensation(object):
-    """
+    r"""
     Object which contains the data and methods to compensate ism data.
 
     ⚠️WARNING⚠️

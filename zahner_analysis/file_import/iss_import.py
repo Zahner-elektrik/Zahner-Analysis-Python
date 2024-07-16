@@ -23,6 +23,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import numpy as np
 import io
 import re
@@ -100,7 +101,7 @@ class IssImport:
         offset = 0.0
         factor = 1.0
 
-        popfPattern = "^\s*(.*?),\s*(.*?)\s*PO.PF.*Ima.*?,(.*?), *(.*)$"
+        popfPattern = r"^\s*(.*?),\s*(.*?)\s*PO.PF.*Ima.*?,(.*?), *(.*)$"
 
         popfMatch = re.search(popfPattern, self.POPF)
 
@@ -112,7 +113,7 @@ class IssImport:
         else:
             # fallback to old format for older ISC files:
 
-            popfPattern = "^\s*(.*?),\\s*(.*?)\s*PO.PF.*"
+            popfPattern = r"^\s*(.*?),\\s*(.*?)\s*PO.PF.*"
             popfMatch = re.search(popfPattern, self.POPF)
 
             if popfMatch:

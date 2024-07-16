@@ -59,14 +59,14 @@ phaseAxis2.legend(["Original Data", "Edited Data"])
 fig2.set_size_inches(18, 10)
 plt.show()
 
-
 exportFile = IsmExport(
     frequency=frequenciesEdit,
     impedance=impedanceAbsolutEdit,
     phase=phaseEdit,
-    system_string=impedanceData.system,
-    potential_string=impedanceData.potential,
-    current_string=impedanceData.current,
+    system_string=impedanceData.getSystemString(),
+    potential_string=impedanceData.getStartVoltageString(),
+    current_string=impedanceData.getStartCurrentString() ,
     metaData=impedanceData.getMetaData(),
 )
 exportFile.writeToFile("li-ion-battery-edited.ism")
+

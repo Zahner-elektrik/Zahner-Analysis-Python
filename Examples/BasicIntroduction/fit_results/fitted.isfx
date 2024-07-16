@@ -3,20 +3,20 @@
     <zahner-fileinfo>
         <type>zahner-impedance-model</type>
         <file-version>3.0</file-version>
-        <created>2023-05-30T15:02:17+02:00</created>
+        <created>2024-07-16T12:41:18+02:00</created>
         <generator>Zahner Analysis</generator>
-        <generator-version>3.2.5</generator-version>
+        <generator-version>3.2.6</generator-version>
         <comment></comment>
-        <app-session>61118380-b3f7-4d8a-93fb-8966fa9ab491</app-session>
+        <app-session>0e628891-3ebc-49a0-81c3-d999caebe6eb</app-session>
         <file-id>03a0867c-80c1-4c1c-9bcd-28f3b961e3c0</file-id>
     </zahner-fileinfo>
     <parsed-tree>
         <parallel-connect>
             <capacitor name="C0">
-                <parameter index="0" value="1.46919e-10" fitterFixed="1"/>
+                <parameter index="0" value="1.47839e-10" fitterFixed="1"/>
             </capacitor>
             <resistor name="R0">
-                <parameter index="0" value="9.95867e+07" fitterFixed="1"/>
+                <parameter index="0" value="9.88658e+07" fitterFixed="1"/>
             </resistor>
         </parallel-connect>
     </parsed-tree>
