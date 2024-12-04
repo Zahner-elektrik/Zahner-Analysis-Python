@@ -4,7 +4,7 @@ r"""
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
  /___/\_,_/_//_/_//_/\__/_/      \__/_/\__/_/\_\\__/_/ /_/_/\_\
 
-Copyright 2023 Zahner-Elektrik GmbH & Co. KG
+Copyright 2024 Zahner-Elektrik GmbH & Co. KG
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
@@ -28,6 +28,23 @@ import numpy as np
 import io
 import struct
 import datetime
+from io import BytesIO, BufferedReader
+from typing import Union
+
+
+def get_remaining_bytes(buffer: Union[BytesIO, BufferedReader]) -> int:
+    current_pos = buffer.tell()
+
+    if isinstance(buffer, BytesIO):
+        total_size = buffer.getbuffer().nbytes
+    else:  # BufferedReader
+        # Save current position
+        buffer.seek(0, 2)  # Seek to end
+        total_size = buffer.tell()
+        # Restore original position
+        buffer.seek(current_pos)
+
+    return total_size - current_pos
 
 
 def readF8FromFile(file: io.BufferedReader) -> float:

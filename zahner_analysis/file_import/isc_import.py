@@ -4,7 +4,7 @@ r"""
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
  /___/\_,_/_//_/_//_/\__/_/      \__/_/\__/_/\_\\__/_/ /_/_/\_\
 
-Copyright 2023 Zahner-Elektrik GmbH & Co. KG
+Copyright 2024 Zahner-Elektrik GmbH & Co. KG
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
@@ -23,6 +23,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import numpy as np
 import datetime
 import io
@@ -33,9 +34,39 @@ from zahner_analysis.file_import.thales_file_utils import *
 
 
 class IscImport:
-    """Class to be able to read out isc files (CV).
+    r"""Class to be able to read out isc files (CV).
 
     This class extracts the data from the isc files.
+
+    The following code example shows how the ACQ data can be read out:
+
+    .. code-block:: python
+
+        cvData = IscImport(r".\CV_32_acq_channels.isc")  # read the file
+
+        print(cvData.getAcqChannelNamesList())  # print available channels
+        print(cvData.getAcqChannelUnitsList())  # print available units
+
+        print(cvData.getAcqDecoded())  # read the flag for the ACQ status
+        desiredAcqChannel = cvData.getAcqChannelNamesList()[
+            1
+        ]  # pick one acq channel by ChannelName
+        print(f"data for channel: {desiredAcqChannel}")
+        print(
+            cvData.getAcqChannel(desiredAcqChannel)[0:10]
+        )  # get the data for this channel
+
+
+    Output of the previous snippet:
+
+    .. code-block:: bash
+
+        ['TC: K; V= 201', 'TC: K; V= 201-1', 'Pot1', 'Pot2', 'Reference', 'NTC', 'Voltage', 'Voltage-1', 'voltage', 'TC: K; V= 201-2', 'TC: K; V= 201-3', 'Pot1-1', 'Pot2-1', '', '-1', '-2', '-3', '-4', '-5', '-6', '-7', '-8', '-9', '-10', '-11', '-12', '-13', '-14', '-15', '-16', '-17', '-18']
+        ['CC', 'C', 'V', 'V', 'C', 'C', 'V', 'V', 'V', 'CC', 'C', 'V', 'V', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+        True
+        data for channel: TC: K; V= 201-1
+        [8.554705   8.44567554 8.4188244  8.40748142 8.41311547 8.41441981
+        8.4115903  8.40405186 8.39793716 8.40518822]
 
     :param file: The path to the isc file, or the isc file as bytes or bytearray.
     :type file: str, bytes, bytearray
@@ -71,9 +102,9 @@ class IscImport:
         self.ZpMp = readF8FromFile(iscFile)
         self.delay = readF8FromFile(iscFile)
 
-        numberOfElements = readI6FromFile(iscFile) + 1
-        intVoltageRead = readI2ArrayFromFile(iscFile, numberOfElements)
-        self.current = readF8ArrayFromFile(iscFile, numberOfElements)
+        self.numberOfElements = readI6FromFile(iscFile) + 1
+        intVoltageRead = readI2ArrayFromFile(iscFile, self.numberOfElements)
+        self.current = readF8ArrayFromFile(iscFile, self.numberOfElements)
 
         self.Date = readZahnerStringFromFile(iscFile)
         self.System = readZahnerStringFromFile(iscFile)
@@ -120,9 +151,105 @@ class IscImport:
                 factor = float(popfMatch.group(2))
 
         self.voltage = intVoltageRead * (factor / 8000.0) + offset
-        self.time = np.array(range(numberOfElements)) * self.ZpMp + self.Sstart
+        self.time = np.array(range(self.numberOfElements)) * self.ZpMp + self.Sstart
 
+        """
+        only new CV format with 32 ACQ channels
+        """
+        remainingBytes = get_remaining_bytes(iscFile)
+        self.acqDecoderSuccess = None
+
+        self.acqChannelNames = []
+        self.acqChannelUnits = []
+        self.acqData = dict()
+        if remainingBytes > 400:
+            self.acqDecoderSuccess = True
+            try:
+                maximumNumberOfAcqChannels = 32
+                self.acqChannelNumbers = readI2ArrayFromFile(
+                    iscFile, maximumNumberOfAcqChannels
+                )
+                self.acqChannelNames = []
+                for i in range(maximumNumberOfAcqChannels):
+                    channelName = readZahnerStringFromFile(iscFile)
+                    if channelName in self.acqChannelNames:
+                        index = 1
+                        newName = f"{channelName}-{index}"
+                        while newName in self.acqChannelNames:
+                            index += 1
+                            newName = f"{channelName}-{index}"
+                        channelName = newName
+                    self.acqChannelNames.append(channelName)
+                self.acqChannelUnits = []
+                for i in range(maximumNumberOfAcqChannels):
+                    self.acqChannelUnits.append(readZahnerStringFromFile(iscFile))
+                for i in range(maximumNumberOfAcqChannels):
+                    # drop coefficients never tested in Zahner Analysis
+                    readF8ArrayFromFile(iscFile, 11)
+
+                numberOfAcqRows = readI6FromFile(iscFile) + 1
+                numberOfAcqChannels = readI6FromFile(iscFile) + 1
+
+                numberOfRowsToAdd = self.numberOfElements - numberOfAcqRows
+                numberOfRowsToDrop = 0
+                if numberOfRowsToAdd < 0:
+                    numberOfRowsToDrop = abs(numberOfRowsToAdd)
+                    numberOfRowsToAdd = 0
+
+                self.acqData = dict()
+                for channel in range(numberOfAcqChannels):
+                    print(f"{self.acqChannelNames[channel]}")
+                    self.acqData[self.acqChannelNames[channel]] = readF8ArrayFromFile(
+                        iscFile, numberOfAcqRows - numberOfRowsToDrop
+                    )
+                    readF8ArrayFromFile(iscFile, numberOfRowsToDrop)
+                    for i in range(numberOfRowsToAdd):
+                        self.acqData[self.acqChannelNames[channel]].append(
+                            self.acqData[self.acqChannelNames[channel]][-1]
+                        )
+            except:
+                """
+                Something does not match the acq format in the file, therefore the ACQ data cannot be decoded.
+                """
+                self.acqDecoderSuccess = False
+                self.acqChannelNames = []
+                self.acqChannelUnits = []
+                self.acqData = dict()
+                pass
         return
+
+    def getAcqDecoded(self) -> Union[None, bool]:
+        """
+        returns the status of the decoded ACQ data, for debugging purposes, as the ACQ format is complex and could cause problems.
+
+        :returns: None if no ACQ data is available, or True if it could be decoded or False if not.
+        """
+        return self.acqDecoderSuccess
+
+    def getAcqChannelNamesList(self) -> list[str]:
+        """
+        returns a list with the different data tracks.
+
+        :returns: List with the track names.
+        """
+        return self.acqChannelNames
+
+    def getAcqChannelUnitsList(self) -> list[str]:
+        """
+        returns a list with the different data tracks.
+
+        :returns: List with the track names.
+        """
+        return self.acqChannelUnits
+
+    def getAcqChannel(self, track: str) -> list[float]:
+        """
+        returns an array with the points for the given track.
+
+        :param track: name of the track
+        :returns: Numpy array with the track.
+        """
+        return self.acqData[track]
 
     def getMeasurementStartDateTime(self) -> datetime.datetime:
         """Get the start date time of the measurement.

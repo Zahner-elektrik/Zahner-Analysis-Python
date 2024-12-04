@@ -4,7 +4,7 @@ r"""
   / /_/ _ `/ _ \/ _ \/ -_) __/___/ -_) / -_)  '_/ __/ __/ /  '_/
  /___/\_,_/_//_/_//_/\__/_/      \__/_/\__/_/\_\\__/_/ /_/_/\_\
 
-Copyright 2023 Zahner-Elektrik GmbH & Co. KG
+Copyright 2024 Zahner-Elektrik GmbH & Co. KG
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
@@ -23,6 +23,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
 import matplotlib.pyplot as plt
 from matplotlib.ticker import EngFormatter
 import numpy as np
@@ -304,7 +305,7 @@ def nyquistPlotter(
             nyquistAxis.annotate(
                 formatter.format_data(anon[0]),
                 (np.real(anon[1]), factor * np.imag(anon[1])),
-                **additionalArgs
+                **additionalArgs,
             )
 
     return fig, nyquistAxis
