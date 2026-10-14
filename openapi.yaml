@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Zahner Analysis Remote Evaluation -  RemoteEval
-  version: 3.2.3
+  version: 3.3.9
   description: |-
     JSON / Rest API documentation for the Zahner Analysis RemoteEval Module
     
@@ -25,7 +25,8 @@ info:
     -  _port_ - The IP port where the server will run
     -  _key_ - The optional API key to limit access to the service
     -  _buffer_size_ - File Size limit for uploading measurement files / models (for troubleshooting purposes)
-    -  _keep_jobs_ - Number of Jobs to be "remembered" after completion
+    -  _keep_jobs_ - Number of Jobs to be "remembered" after completion (1 to 100, default 3)
+    -  _access_control_allow_origin_ - Value of an Access-Control-Allow-Origin header added to every response
     
     Examples:
     
@@ -34,6 +35,18 @@ info:
     > ZahnerAnalysis.exe --remoteEval,port=8080,key=secretPhrase123
     > ZahnerAnalysis.exe --remoteEval,port=7777,keep_jobs=100
   
+    ## File formats
+    
+    Spectra can be sent as .ism and .zdax, and with the _Zahner Lab file formats_ module as
+    .zmx, .zdx and .zrb. The simulation and the samples come back in the format the spectrum
+    was sent in (.zrb as .zdx, .zdax as .ism outside developer mode), unless
+    _parameters.Output.Format_ asks for another one. The fitted model is always .isfx.
+    
+    A spectrum holding several impedances, one per PAD4 channel for example, is fitted on its
+    main impedance unless _parameters.Fit.ImpedanceName_ names another one.
+    
+    The README.md of the module describes every parameter in detail.
+    
     ## Further Documentation
     
     If Zahner Analysis is already installed, the manual can usually be found here:  
@@ -120,7 +133,10 @@ paths:
                 eis-file:
                   type: string
                   format: binary
-                  description: 'A .ism file containing the measured data / impedance spectrum'
+                  description: |-
+                    The measured impedance spectrum, for EvalEis.Fit only. The extension of
+                    its file name decides the format: .ism, .zdax, and with the Zahner Lab
+                    file formats module .zmx, .zdx and .zrb.
                 model-file:
                   type: string
                   format: binary
@@ -145,8 +161,14 @@ paths:
                       enum:
                         - success
                         - error
+                        - failed
                     parameters:
                       $ref: '#/components/schemas/EisFitParameterSet'
+                    messages:
+                      type: array
+                      items:
+                        type: string
+                      description: 'Why the job was not started, with status "error" or "failed"'
         '401':
           description: API key required but not supplied
   '/job/{job-id}/status':
@@ -224,7 +246,11 @@ paths:
       tags:
         - jobs
       summary: Download the fitted impedance spectrum
-      description: Download the impedance spectrum generated trough simulation of the fitted model
+      description: |-
+        Download the impedance spectrum generated trough simulation of the fitted model.
+
+        It is in the format reported as parameters.Output.Format, and the file name given by
+        Content-Disposition is simulation.<format>.
       parameters:
         -
           name: 'job-id'
@@ -242,7 +268,7 @@ paths:
             format: password
       responses:
         '200':
-          description: The impedance spectrum in .ism-format
+          description: The impedance spectrum in the output format (.ism, .zmx, .zdx or .zdax)
           content:
             application/octet-stream:
               schema:
@@ -259,7 +285,11 @@ paths:
       tags:
         - jobs
       summary: Download the samples used for fitting
-      description: Download an impedance spectra containing the samples which have been selected for fitting
+      description: |-
+        Download an impedance spectra containing the samples which have been selected for fitting.
+
+        It is in the format reported as parameters.Output.Format, and the file name given by
+        Content-Disposition is samples.<format>.
       parameters:
         -
           name: 'job-id'
@@ -277,7 +307,7 @@ paths:
             format: password
       responses:
         '200':
-          description: The impedance spectrum in .ism-format
+          description: The impedance spectrum in the output format (.ism, .zmx, .zdx or .zdax)
           content:
             application/octet-stream:
               schema:
@@ -342,7 +372,7 @@ components:
           description: 'Request status (/id should never fail)'
         version:
           type: string
-          default: '3.2.3'
+          default: '3.3.9'
           description: 'Version number of the remote software'
     JobDescription:
       type: object
@@ -367,7 +397,7 @@ components:
           description: |-
             Request Mode:
             -  queued: The job will be started assynchronously, the call returns immediately
-            -  block: The call will be stuck until the job is finished, the Job will still be enqueued normally
+            -  block: accepted for compatibility, currently the same as queued: poll the status until the job is done
         parameters:
           $ref: '#/components/schemas/EisFitParameterSet'
     JobInformation:
@@ -437,41 +467,66 @@ components:
                   type: number
     EisFitParameterSet:
       type: object
+      description: |-
+        Every group and parameter is optional; null is the same as left out. A number can also
+        be sent as text holding one ("1e3"). A value that is no number where one is expected
+        fails the job, with a message naming the parameter. Before a fit job has run, a
+        parameter that depends on the spectrum is reported as "TBD from source EIS".
       properties:
         Fit:
           $ref: '#/components/schemas/FitParameters'
         Simulation:
           $ref: '#/components/schemas/SimulationParameters'
+        Output:
+          $ref: '#/components/schemas/OutputParameters'
     FitParameters:
       type: object
       properties:
         UpperFrequencyLimit:
-          $ref: '#/components/schemas/UpperFrequencyLimit'
+          allOf:
+            - $ref: '#/components/schemas/UpperFrequencyLimit'
+          description: 'Default: the highest frequency of the spectrum. A limit can only narrow the range.'
         LowerFrequencyLimit:
-          $ref: '#/components/schemas/LowerFrequencyLimit'
+          allOf:
+            - $ref: '#/components/schemas/LowerFrequencyLimit'
+          description: 'Default: the lowest frequency of the spectrum. A limit can only narrow the range.'
         DataSource:
           $ref: '#/components/schemas/EisFitDataSource'
-        Smoothness: 
+        Smoothness:
           $ref: '#/components/schemas/Smoothness'
-        NumberOfSamples: 
-          $ref: '#/components/schemas/NumberOfSamples'
+        NumberOfSamples:
+          type: integer
+          minimum: 5
+          maximum: 100000
+          description: 'Default: one sample per measured frequency within the limits. A fit needs 5 samples at least.'
+        ImpedanceName:
+          $ref: '#/components/schemas/ImpedanceName'
     SimulationParameters:
       type: object
+      description: |-
+        For EvalEis.Fit the defaults are the fit's limits and the measured frequencies, for
+        EvalEis.Sim 1e7 Hz, 1e-3 Hz and 100 samples.
       properties:
         UpperFrequencyLimit:
           $ref: '#/components/schemas/UpperFrequencyLimit'
         LowerFrequencyLimit:
           $ref: '#/components/schemas/LowerFrequencyLimit'
-        NumberOfSamples: 
-          $ref: '#/components/schemas/NumberOfSamples'
+        NumberOfSamples:
+          type: integer
+          minimum: 2
+          maximum: 1000000
+          description: 'Number of logarithmically spaced frequencies'
+    OutputParameters:
+      type: object
+      properties:
+        Format:
+          $ref: '#/components/schemas/OutputFormat'
     UpperFrequencyLimit:
       type: number
-      default: 2e6
       minimum: 0
       exclusiveMinimum: true
     LowerFrequencyLimit:
       type: number
-      default: 1e-2
       minimum: 0
       exclusiveMinimum: true
     Smoothness:
@@ -479,10 +534,32 @@ components:
       minimum: 0
       maximum: 1
       default: 2e-4
-    NumberOfSamples:
-      type: integer
-      minimum: 5
-      default: 100
+      description: 'Smoothing constant of the spline, used with the data source "smoothed" only'
+    ImpedanceName:
+      type: string
+      default: ''
+      example: 'blubb'
+      description: |-
+        Which impedance to fit, of a spectrum holding several (one per PAD4 channel, for
+        example). Missing or empty, the main impedance is fitted. A name matches the name
+        Zahner Analysis shows for the impedance, the impedance_name it was given in the file,
+        or its signal paths as "numerator/denominator". A name the spectrum does not hold
+        fails the job, and its messages list the names there are.
+
+        .ism and .zdax files hold a single impedance and ignore it. After the fit, the name
+        of the impedance that was fitted is reported, empty for those formats.
+    OutputFormat:
+      type: string
+      enum:
+        - ism
+        - zmx
+        - zdx
+        - zdax
+      description: |-
+        Format of the simulation and samples files. Default for EvalEis.Fit: the format the
+        spectrum was sent in (.zrb comes back as .zdx), for EvalEis.Sim: ism. .zdax is written
+        in developer mode only. A format that cannot be written comes back as ism, and the
+        format reported after the job is the one the files are in.
     EisFitDataSource:
       type: string
       enum:

@@ -11,12 +11,13 @@ keywords = [
 ]
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "numpy",
     "matplotlib",
     "requests",
     "scipy",
+    "zahner_link"
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -30,11 +31,10 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Physics",
 
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
@@ -50,7 +50,7 @@ dynamic = ["version"]
 [tool.setuptools_scm]
 
 [tool.setuptools.packages.find]
-where = ["."]  # list of folders that contain the packages (["."] by default)
-include = ["zahner_analysis*"]  # package names should match these glob patterns (["*"] by default)
+where = ["."]
+include = ["zahner_analysis*"]
 
 

@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<zahner-measurement>
+    <zahner-fileinfo>
+        <type>zahner-measurement</type>
+        <file-version>4</file-version>
+        <creation-timestamp>2026-10-14T07:28:40.334303</creation-timestamp>
+        <generator>Zahner Analysis</generator>
+        <generator-version>3.3.9</generator-version>
+        <comment>Simulation created with
+Zahner Analysis 3.3.9</comment>
+    </zahner-fileinfo>
+    <zahner-measurement>
+        <dataset type="AC" job-type-short="EIS" job-type="Electrochemical Impedance Spectroscopy">
+            <configuration>
+                <column-class type="impedance" urn="voltage/current" numerator="voltage" denominator="current" impedance_name="voltage/current"/>
+            </configuration>
+            <data-structure>
+                <column urn="" name="frequency" type="double" unit="Hz"/>
+                <column urn="" name="periods" type="double" unit=""/>
+                <column urn="" name="time" type="double" unit="s"/>
+                <column urn="" name="significance" type="double" unit=""/>
+                <column urn="voltage/current" name="|impedance|" type="double" unit="Ω"/>
+                <column urn="voltage/current" name="phase" type="double" unit="rad"/>
+            </data-structure>
+            <sections>
+                <section type="AC" job-type-short="EIS" job-type="Electrochemical Impedance Spectroscopy" length="58" time-start="0">
+                    <job-info>
+                        <job-id>142925dd-d0ad-4cf7-95a0-2325f8026f22</job-id>
+                        <status>FINISHED</status>
+                        <status-detail>RUN_TO_COMPLETION</status-detail>
+                        <created>2026-10-14T02:28:40.000Z</created>
+                        <started>2026-10-14T02:28:40.000Z</started>
+                        <ended>2026-10-14T02:29:37.000Z</ended>
+                        <type>eis_table</type>
+                        <parameters>
+                            <bias>0</bias>
+                            <frequency_range type="table">
+                                <entry>
+                                    <frequency>1</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>1.4717568135714669</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>1.9221761044147789</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>2.4917903224226849</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>3.2080856771776212</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>4.1041182741855327</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>5.2195145325732044</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>6.601632201749287</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>8.3069052015717073</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>10.402398558122339</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>12.96760312003571</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>16.096503558697961</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>19.899957423855309</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>24.508427793060559</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>30.07511737265575</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>36.779557838714368</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>44.831714813481689</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>54.476676227689218</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>66</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>79.960825469486835</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>96.874751663056585</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>117.3664410625689</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>142.19268954210429</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>172.27037623504739</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>208.71032557111289</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>252.85833207078079</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>306.34486301844322</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>371.14527462563012</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>449.6527655782541</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>544.76676227689165</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>659.99999999999932</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>799.60825469486747</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>968.74751663056475</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>1000</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>1173.6644106256881</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>1421.926895421042</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>1722.7037623504721</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>2087.103255711128</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>2528.5833207078058</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>3063.448630184429</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>3711.4527462562978</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>4496.5276557825373</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>5447.6676227689122</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>6599.9999999999882</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>7996.082546948669</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>9687.4751663056395</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>11736.64410625687</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>14219.2689542104</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>17227.037623504701</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>20871.032557111259</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>25285.833207078042</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>30634.486301844259</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>37114.527462562939</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>44965.276557825317</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>54476.676227689059</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>65999.999999999811</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>79960.825469486605</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                                <entry>
+                                    <frequency>100000</frequency>
+                                    <amplitude>0</amplitude>
+                                    <meas_waves>0</meas_waves>
+                                    <meas_duration>0</meas_duration>
+                                    <pre_waves>0</pre_waves>
+                                    <pre_duration>0</pre_duration>
+                                </entry>
+                            </frequency_range>
+                        </parameters>
+                        <stop-conditions/>
+                        <meta>
+                            <entry name="converted-by" value="Zahner Analysis 3.3.9"/>
+                            <entry name="converted-from" value="data created in the program"/>
+                            <entry name="measurement-parameters" value="not recorded by the source; only the measured frequencies are stated"/>
+                        </meta>
+                        <message>no error occoured</message>
+                        <last-error>
+                            <number>0</number>
+                            <code>NONE</code>
+                            <message>no error occoured</message>
+                            <message-parameters/>
+                        </last-error>
+                    </job-info>
+                </section>
+            </sections>
+            <csv type="data"><![CDATA[
+frequency;periods;time;significance;|impedance|;phase
+Hz;;s;;Ω;rad
+;;;;voltage/current;voltage/current
+1;0;0;1;958.42830967673001;-0.013829279552088588
+1.4717568135714669;0;1;1;958.23169823231467;-0.020349034922504762
+1.9221761044147789;0;2;1;957.9741558655378;-0.026569332610685503
+2.4917903224226849;0;3;1;957.55109396516548;-0.034427163735751831
+3.2080856771776212;0;4;1;956.86547855517892;-0.044290946296050696
+4.1041182741855327;0;5;1;955.76876459730329;-0.056594596515552237
+5.2195145325732044;0;6;1;954.03692637923507;-0.071840875711376456
+6.601632201749287;0;7;1;951.33795706433409;-0.09059824258089047
+8.3069052015717073;0;8;1;947.19039815879239;-0.11348516681745181
+10.402398558122339;0;9;1;940.91573571932895;-0.14113231280786634
+12.96760312003571;0;10;1;931.59471626415643;-0.1741088507607042
+16.096503558697961;0;11;1;918.05061998746999;-0.2127964306388255
+19.899957423855309;0;12;1;898.90057379617133;-0.25719817915147397
+24.508427793060559;0;13;1;872.72995513537523;-0.30668935649716517
+30.07511737265575;0;14;1;838.43065042775197;-0.35975955476538846
+36.779557838714368;0;15;1;795.66920943026457;-0.41385721196071129
+44.831714813481689;0;16;1;745.318103403382;-0.46548529897792079
+54.476676227689218;0;17;1;689.58672935969014;-0.51064684196045618
+66;0;18;1;631.67553823935248;-0.5455804272769611
+79.960825469486835;0;19;1;574.22222391754542;-0.5677790630586097
+96.874751663056585;0;20;1;520.45675463338023;-0.57546880097196818
+117.3664410625689;0;21;1;472.77189821938123;-0.56881421217010364
+142.19268954210429;0;22;1;432.44939837302951;-0.54994656129677055
+172.27037623504739;0;23;1;399.71673342448622;-0.52255133362695572
+208.71032557111289;0;24;1;374.00281270088414;-0.49113798813891746
+252.85833207078079;0;25;1;354.25332797579352;-0.46022831897007171
+306.34486301844322;0;26;1;339.20899070665217;-0.43372315594123767
+371.14527462563012;0;27;1;327.59885778168046;-0.41459439418185284
+449.6527655782541;0;28;1;318.24142246523286;-0.40487676059879957
+544.76676227689165;0;29;1;310.07274798071506;-0.40582186424463795
+659.99999999999932;0;30;1;302.13269615536211;-0.41806621054965681
+799.60825469486747;0;31;1;293.54195657821293;-0.44171343275031372
+968.74751663056475;0;32;1;283.50015066655084;-0.4762903249050825
+1000;0;33;1;281.64886940070608;-0.48299436126284528
+1173.6644106256881;0;34;1;271.32969705026414;-0.52059111378226142
+1421.926895421042;0;35;1;256.57487573333719;-0.57248108048086099
+1722.7037623504721;0;36;1;239.13300022941254;-0.62878469674081072
+2087.103255711128;0;37;1;219.35293666010924;-0.68539746726383477
+2528.5833207078058;0;38;1;198.02130605359403;-0.73768562777427593
+3063.448630184429;0;39;1;176.20487847368165;-0.78108581711041214
+3711.4527462562978;0;40;1;155.00708695371222;-0.81169857871149642
+4496.5276557825373;0;41;1;135.348159532935;-0.82669519949454828
+5447.6676227689122;0;42;1;117.84719104783871;-0.82449968918869043
+6599.9999999999882;0;43;1;102.81211486544579;-0.80483074488845974
+7996.082546948669;0;44;1;90.295455274414323;-0.76869903735848488
+9687.4751663056395;0;45;1;80.169551511287395;-0.718370844446936
+11736.64410625687;0;46;1;72.194250580549081;-0.6572147415319588
+14219.2689542104;0;47;1;66.06949831781273;-0.58933435215889218
+17227.037623504701;0;48;1;61.475018327923856;-0.51899423037403225
+20871.032557111259;0;49;1;58.100337139502614;-0.44999694495891779
+25285.833207078042;0;50;1;55.666048774995566;-0.385228184242839
+30634.486301844259;0;51;1;53.935940805262028;-0.32649429391675477
+37114.527462562939;0;52;1;52.72053581524456;-0.27462294119912739
+44965.276557825317;0;53;1;51.874197833028255;-0.22970574206037356
+54476.676227689059;0;54;1;51.288661513608126;-0.19136395279826465
+65999.999999999811;0;55;1;50.885443172792037;-0.15896853112521331
+79960.825469486605;0;56;1;50.60868894000555;-0.1317941321920473
+100000;0;57;1;50.394187613410587;-0.10574605025532392
+]]></csv>
+        </dataset>
+    </zahner-measurement>
+</zahner-measurement>

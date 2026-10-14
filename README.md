@@ -13,6 +13,8 @@ The elements and parameters of the model can be read and processed with Python.
 
 With the Python package [thales_remote](https://github.com/Zahner-elektrik/Thales-Remote-Python) as a supplement, EIS measurements can be performed with a Zennium and immediately evaluated. The [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) is not required for importing and plotting data with Python.
 
+[IM7](https://zahner.de/products-details/potentiostats/im7x) measurements saved by [Zahner Lab](https://zahner.de/products-details/software/zahner-lab) as zmx files can be fitted as well. If the measurement contains several impedances, for example one per PAD4 channel, each impedance can be fitted on its own.
+
 Additional features are the import of measurement data for CV and I/E measurements (isc and iss files). For this the [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) is not necessary.
 
 # 📚 Documentation
@@ -96,6 +98,13 @@ If measurement data are saved from the examples, they are located in the corresp
 * Perform ZHIT evaluation
 * Plot the result
 
+## [FitZmxIM7Data.ipynb](https://github.com/Zahner-elektrik/Zahner-Analysis-Python/blob/main/Examples/FitZmxIM7Data/FitZmxIM7Data.ipynb)
+
+* Load an [IM7](https://zahner.de/products-details/potentiostats/im7x) measurement in the zmx format
+* Select the impedances of the cell and of the PAD4 channels
+* Fit the model to every impedance
+* Compare and plot the results of all channels
+
 ## [SetupCompensation.ipynb](https://github.com/Zahner-elektrik/Zahner-Analysis-Python/blob/main/Examples/SetupCompensation/SetupCompensation.ipynb)
 
 * Apply Short-Open-Load correction to EIS data
@@ -115,4 +124,6 @@ Programming is done with the latest Python version at the time of commit.
 
 If you work with equivalent circuits and you need the fit and simulate functions, you need the [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) with its REST interface. To use the REST interface, you need a licensed [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) with at least version **3.2.1**. The [Zahner Analysis Software](https://zahner.de/products-details/software/Zahner-Analysis) is **not required for importing and plotting** data.
 
-The packages [matplotlib](https://matplotlib.org/), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) are used to display the measurement results. The [requests package](https://pypi.org/project/requests/) is necessary to communicate with the Zahner Analysis. Jupyter is not necessary, each example is also available as a Python file.
+Fitting zmx files of the IM7 requires a [Zahner Analysis](https://zahner.de/products-details/software/Zahner-Analysis) with support for the IM7 file formats. Selecting one of several impedances of a zmx file, for example a PAD4 channel, requires at least version **3.3.9**.
+
+The packages [matplotlib](https://matplotlib.org/), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) are used to display the measurement results. The [requests package](https://pypi.org/project/requests/) is necessary to communicate with the Zahner Analysis. The package [zahner_link](https://pypi.org/project/zahner-link/) reads the zmx files of the IM7. Jupyter is not necessary, each example is also available as a Python file.
